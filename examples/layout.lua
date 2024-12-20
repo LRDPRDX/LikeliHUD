@@ -159,7 +159,7 @@ local layout = ui.Layout {
 
         ui.Image {
             path      = 'images/lua-logo-64.png',
-            fillWidth = false,
+            fill      = { y = true },
             pad       = 5,
         },
 
@@ -173,41 +173,37 @@ local layout = ui.Layout {
 
         ui.Image {
             path      = 'images/lua-logo-64.png',
-            fillWidth = false,
+            fill      = { y = true },
             pad       = 5,
         },
     },
 
     ui.Layout {
-        fillHeight = false,
+        fill       = { x = true },
         rows       = 1,
         columns    = 4,
 
         ui.Image {
             path       = 'images/lua-logo-64.png',
-            fillWidth  = false,
-            fillHeight = false,
+            fill       = { },
             pad        = 5,
         },
 
         ui.Image {
             path       = 'images/lua-logo-64.png',
-            fillWidth  = false,
-            fillHeight = false,
+            fill       = { },
             pad        = 5,
         },
 
         ui.Image {
             path       = 'images/lua-logo-64.png',
-            fillWidth  = false,
-            fillHeight = false,
+            fill       = { },
             pad        = 5,
         },
 
         ui.Image {
             path       = 'images/lua-logo-64.png',
-            fillWidth  = false,
-            fillHeight = false,
+            fill       = { },
             pad        = 5,
         },
     }

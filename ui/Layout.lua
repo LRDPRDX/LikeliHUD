@@ -35,7 +35,7 @@ local function preplace (self)
         maxSY = maxSY or 0
 
         for c = 1, self.columns do
-            if grid[r][c].fillHeight then rowsToFill[r] = true end
+            if grid[r][c].fill.y then rowsToFill[r] = true end
             grid[r][c]._cell.h = maxSY
         end
     end
@@ -55,7 +55,7 @@ local function preplace (self)
         maxSX = maxSX or 0
 
         for r = 1, self.rows do
-            if grid[r][c].fillWidth then columnsToFill[c] = true end
+            if grid[r][c].fill.x then columnsToFill[c] = true end
             grid[r][c]._cell.w = maxSX
         end
     end

@@ -4,7 +4,7 @@
 
 ## Give it a taste
 
-```
+```lua
 local ui = require('ui')
 
 local simple = ui.Layout {
@@ -78,5 +78,4 @@ find the one which would have everything I needed I've learned a lot from them.
 - More or less the list of those can be found
 here [love2d ui libs](https://www.love2d.org/wiki/Graphical_User_Interface).
 - Also see [yui](https://codeberg.org/1414codeforge/yui)
-
 

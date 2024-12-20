@@ -6,11 +6,10 @@ end
 
 local Block = {
     visible    = true,
-    fillWidth  = true,
-    fillHeight = true,
     pad        = 0,
     align      = 'center',
-    offset     = { x = 0, y = 0 }
+    offset     = { x = 0, y = 0 },
+    fill       = { x = true, y = true },
 }
 Block.__index = Block
 

@@ -5,9 +5,9 @@ love.graphics.setFont(font)
 
 local ui = require('ui')
 
---local HUD = require('examples.layout')
-local HUD = require('examples.simple')
---local HUD = require('examples.o')
+local HUD = require('examples.layout')
+-- local HUD = require('examples.simple')
+-- local HUD = require('examples.o')
 
 local o = love.audio.newSource( 'sounds/oe.mp3', 'stream' )
 Signal.register('button.pressed', function(...) if o:isPlaying() then o:stop() end o:play() end)
