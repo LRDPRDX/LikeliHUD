@@ -115,4 +115,23 @@ function Block:draw()
     love.graphics.pop()
 end
 
+function Block:traverse(insideIncluded)
+    insideIncluded = insideIncluded or true
+    return function (stack)
+        if #stack == 0 then return nil end
+        local block = table.remove(stack)
+
+        for _, child in ipairs(block) do
+            table.insert(stack, child)
+        end
+
+        if insideIncluded and block.inside then
+            for _, childInside in ipairs(block.inside) do
+                table.insert(stack, childInside)
+            end
+        end
+        return block
+    end, { self }
+end
+
 return Block

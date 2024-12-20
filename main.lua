@@ -15,6 +15,7 @@ Signal.register('button.pressed', function(...) if o:isPlaying() then o:stop() e
 function love.load()
     local w, h = 1200, 800
     love.window.setMode(w, h, { resizable = true })
+
     HUD:place(10, 10, w - 20, h - 20)
 end
 

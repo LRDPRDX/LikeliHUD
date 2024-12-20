@@ -30,7 +30,13 @@ local simple = ui.Layout {
         ui.Label { text = 'HUD', },
     }
 }
+
+for block in simple:traverse() do
+    block.border = true
+end
 ```
+
+![simple](images/simple.png)
 
 ## Feature list
 

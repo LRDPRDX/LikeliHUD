@@ -24,4 +24,8 @@ local simple = ui.Layout {
     }
 }
 
+for block in simple:traverse() do
+    block.border = true
+end
+
 return simple
