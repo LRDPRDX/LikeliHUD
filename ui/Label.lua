@@ -8,13 +8,22 @@ local Label = setmetatable({
 Label.__index = Label
 
 function Label:new(o)
-    return setmetatable(o, self)
+    self = setmetatable(o, self)
+
+    self.text    = self.text or ''
+    self.maxText = self.maxText or self.text
+
+    if #self.maxText < #self.text then
+        self.maxText = self.text
+    end
+
+    return self
 end
 
 function Label:doSize()
     local font = love.graphics.getFont()
-    return { x = font:getWidth(self.text),
-             y = font:getHeight(self.text) }
+    return { x = font:getWidth(self.maxText),
+             y = font:getHeight(self.maxText) }
 end
 
 function Label:doDraw()
