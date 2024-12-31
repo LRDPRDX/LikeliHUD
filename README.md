@@ -56,6 +56,14 @@ end
 
 ## Examples
 
+Run `main.lua` :
+
+```bash
+love path/to/likelihud
+```
+
+and press `1`, `2`, `3` to switch between examples.
+
 ### Layout
 
 This example is just a demo of the layouting system (code

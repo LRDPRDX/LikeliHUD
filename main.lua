@@ -3,37 +3,56 @@ local Signal = require('libraries.hump.signal')
 local font = love.graphics.newFont('fonts/moder-dos-437.ttf', 30)
 love.graphics.setFont(font)
 
+local screen = {
+    w       = 1200,
+    h       = 800,
+    margin  = 10,
+}
+
 local ui = require('ui')
 
-local HUD = require('examples.layout')
--- local HUD = require('examples.simple')
--- local HUD = require('examples.o')
+local layoutUI  = require('examples.layout')
+local simpleUI  = require('examples.simple')
+local oeUI      = require('examples.o')
+local HUD       = nil
 
-local o = love.audio.newSource( 'sounds/oe.mp3', 'stream' )
-Signal.register('button.pressed', function(...) if o:isPlaying() then o:stop() end o:play() end)
+local function updateHUD(newHUD)
+    w, h = love.window.getMode()
+    HUD = newHUD
+    HUD:place(screen.margin, screen.margin, w - 2 * screen.margin, h - 2 * screen.margin)
+end
+
+local oeSound = love.audio.newSource( 'sounds/oe.mp3', 'stream' )
+Signal.register('button.pressed', function(...) if oeSound:isPlaying() then oeSound:stop() end oeSound:play() end)
+
+local keys = {
+    pressed = {
+        ['space'] = function() Signal.emit('button.pressed') end,
+        ['1'] = function() updateHUD(layoutUI) end,
+        ['2'] = function() updateHUD(simpleUI) end,
+        ['3'] = function() updateHUD(oeUI) end,
+        ['q'] = function() love.event.quit() end,
+    },
+    released = {
+        ['space'] = function() Signal.emit('button.released') end,
+    }
+}
 
 function love.load()
-    local w, h = 1200, 800
-    love.window.setMode(w, h, { resizable = true })
-
-    HUD:place(10, 10, w - 20, h - 20)
+    love.window.setMode(screen.w, screen.h, { resizable = true })
+    updateHUD(layoutUI)
 end
 
 function love.resize(w, h)
-    local margin = 10
-    HUD:place(margin, margin, w - 2 * margin, h - 2 * margin)
+    HUD:place(screen.margin, screen.margin, w - 2 * screen.margin, h - 2 * screen.margin)
 end
 
 function love.keypressed(key)
-    if key == 'space' then
-        Signal.emit('button.pressed')
-    end
+    if keys.pressed[key] then keys.pressed[key]() end
 end
 
 function love.keyreleased(key)
-    if key == 'space' then
-        Signal.emit('button.released')
-    end
+    if keys.released[key] then keys.released[key]() end
 end
 
 function love.draw()
