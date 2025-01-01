@@ -47,11 +47,11 @@ function Block:place(x, y, w, h)
 
     self:doPlace(x, y, w, h)
 
-    if not self.inside then
+    if not self.on then
         return
     end
 
-    for _, item in ipairs(self.inside) do
+    for _, item in ipairs(self.on) do
         item:place(self.x, self.y, sx, sy)
     end
 end
@@ -106,16 +106,15 @@ function Block:draw()
 
         self:doDraw()
 
-        if self.inside then
-            for _, item in ipairs(self.inside) do
+        if self.on then
+            for _, item in ipairs(self.on) do
                 item:draw()
             end
         end
     love.graphics.pop()
 end
 
-function Block:traverse(insideIncluded)
-    insideIncluded = insideIncluded or true
+function Block:traverse()
     return function (stack)
         if #stack == 0 then return nil end
         local block = table.remove(stack)
@@ -124,9 +123,9 @@ function Block:traverse(insideIncluded)
             table.insert(stack, child)
         end
 
-        if insideIncluded and block.inside then
-            for _, childInside in ipairs(block.inside) do
-                table.insert(stack, childInside)
+        if block.on then
+            for _, childOn in ipairs(block.on) do
+                table.insert(stack, childOn)
             end
         end
         return block
