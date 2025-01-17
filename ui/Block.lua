@@ -8,7 +8,7 @@ local Block = {
     visible    = true,
     pad        = 0,
     align      = 'center',
-    offset     = { x = 0, y = 0 },
+    drawOn     = { x = 0, y = 0 },
     fill       = { x = true, y = true },
 }
 Block.__index = Block
@@ -39,11 +39,11 @@ function Block:place(x, y, w, h)
 
     local sx, sy = self:size()
 
-    -- Take the offset into account
-    w = self.offset.w or (w - self.offset.x)
-    h = self.offset.h or (h - self.offset.y)
-    x = x + self.offset.x
-    y = y + self.offset.y
+    -- Take the drawOn into account
+    w = self.drawOn.width or (w - self.drawOn.x)
+    h = self.drawOn.height or (h - self.drawOn.y)
+    x = x + self.drawOn.x
+    y = y + self.drawOn.y
 
     self:doPlace(x, y, w, h)
 
@@ -52,6 +52,9 @@ function Block:place(x, y, w, h)
     end
 
     for _, item in ipairs(self.on) do
+        if self.drawMap then
+            item.drawOn = self.drawMap[item.drawOn] or item.drawOn
+        end
         item:place(self.x, self.y, sx, sy)
     end
 end
@@ -85,7 +88,7 @@ function Block:doPlace(x, y, w, h)
         end
     }
 
-    for direction in self.align:gmatch('([^+]+)') do
+    for direction in self.align:gsub('%s+', ''):gmatch('([^+]+)') do
         if move[direction] then move[direction]() end
     end
 end
