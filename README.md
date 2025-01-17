@@ -78,6 +78,8 @@ This is the simplest game ever written with LÖVE2D (code
 
 ![signals example](/gifs/o.gif)
 
+More examples later.
+
 ## Acknowledgements and similar projects
 
 I had seen several ui libs before I decided to write my own. Though I didn't
