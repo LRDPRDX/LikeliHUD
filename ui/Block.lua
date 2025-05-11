@@ -4,6 +4,18 @@ local function round (x)
     return math.floor(x + 0.5)
 end
 
+local function zoom (t, zoom)
+    if not zoom or zoom == 1 then
+        return t
+    end
+
+    for k, v in pairs(t) do
+        t[k] = v * zoom
+    end
+
+    return t
+end
+
 local Block = {
     visible    = true,
     pad        = 0,
@@ -53,7 +65,10 @@ function Block:place(x, y, w, h)
 
     for _, item in ipairs(self.on) do
         if self.drawMap then
-            item.drawOn = self.drawMap[item.drawOn] or item.drawOn
+            local drawArea = self.drawMap[item.drawOn]
+            if drawArea then
+                item.drawOn = zoom(drawArea, self.drawMap.zoom)
+            end
         end
         item:place(self.x, self.y, sx, sy)
     end
