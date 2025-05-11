@@ -1,10 +1,7 @@
 local UI = (...):gsub('Rectangle$', '')
 local Block = require(UI .. 'Block')
 
-local Rectangle = setmetatable({
-    __call = function(cls, args)
-        return cls:new(args)
-    end }, Block)
+local Rectangle = setmetatable({}, Block)
 Rectangle.__index = Rectangle
 
 function Rectangle:new(o)

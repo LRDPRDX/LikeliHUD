@@ -21,10 +21,7 @@ local function loadDrawMap (path)
     return map
 end
 
-local Image = setmetatable({
-    __call = function(cls, args)
-                return cls:new(args)
-             end }, Block)
+local Image = setmetatable({}, Block)
 Image.__index = Image
 
 function Image:new(o)

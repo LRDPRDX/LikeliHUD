@@ -1,10 +1,7 @@
 local UI = (...):gsub('Label$', '')
 local Block = require(UI .. 'Block')
 
-local Label = setmetatable({
-    __call = function(cls, args)
-        return cls:new(args)
-    end }, Block)
+local Label = setmetatable({}, Block)
 Label.__index = Label
 
 function Label:new(o)

@@ -1,10 +1,7 @@
 local UI    = (...):gsub('Stack$', '')
 local Block = require(UI .. 'Block')
 
-local Stack = setmetatable({
-    __call = function(cls, args)
-        return cls:new(args)
-    end, }, Block)
+local Stack = setmetatable({}, Block)
 Stack.__index = Stack
 
 

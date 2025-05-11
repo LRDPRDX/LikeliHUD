@@ -63,10 +63,7 @@ local function preplace (self)
     return rowsToFill, columnsToFill
 end
 
-local Layout = setmetatable({
-    __call = function(cls, args)
-        return cls:new(args)
-    end, }, Block)
+local Layout = setmetatable({}, Block)
 Layout.__index = Layout
 
 function Layout:new(o)
