@@ -1,4 +1,5 @@
 local Signal = require('libraries.hump.signal')
+local Class  = require('libraries.class.class')
 
 local function round (x)
     return math.floor(x + 0.5)
@@ -16,26 +17,25 @@ local function zoom (t, zoom)
     return t
 end
 
-local Block = {
-    visible    = true,
-    pad        = 0,
-    align      = 'center',
-    drawOn     = { x = 0, y = 0 },
-    fill       = { x = true, y = true },
-}
-Block.__index = Block
+local function drawBorder (block)
+    love.graphics.rectangle('line',
+                            block._cell.x, block._cell.y, block._cell.w, block._cell.h)
+end
 
-function Block.__call(cls, args)
-    local signals = args['signals']
-    args['signals'] = nil
-    local instance = cls:new(args)
-    if(signals) then
-        for k, f in pairs(signals) do
-            Signal.register(k, function(...) f(instance, ...) end)
+local Block = Class:subclass('Block')
+
+function Block:new()
+    self.visible = self.visible or true
+    self.pad     = self.pad     or 0
+    self.align   = self.align   or 'center'
+    self.drawOn  = self.drawOn  or { x = 0, y = 0 }
+    self.fill    = self.fill    or { x = true, y = true }
+
+    if self.signals then
+        for k, f in pairs(self.signals) do
+            Signal.register(k, function(...) f(self, ...) end)
         end
     end
-
-    return instance
 end
 
 function Block:size()
@@ -52,7 +52,7 @@ function Block:place(x, y, w, h)
     local sx, sy = self:size()
 
     -- Take the drawOn into account
-    w = self.drawOn.width or (w - self.drawOn.x)
+    w = self.drawOn.width  or (w - self.drawOn.x)
     h = self.drawOn.height or (h - self.drawOn.y)
     x = x + self.drawOn.x
     y = y + self.drawOn.y
@@ -108,10 +108,6 @@ function Block:doPlace(x, y, w, h)
     end
 end
 
-function Block:drawBorder()
-    love.graphics.rectangle('line', self._cell.x, self._cell.y, self._cell.w, self._cell.h)
-end
-
 function Block:draw()
     if not self.visible then
         return
@@ -119,7 +115,7 @@ function Block:draw()
 
     love.graphics.push('all')
         if self.border then
-            self:drawBorder()
+            drawBorder(self)
         end
 
         self:doDraw()

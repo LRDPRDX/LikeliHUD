@@ -1,14 +1,7 @@
 local UI    = (...):gsub('Stack$', '')
 local Block = require(UI .. 'Block')
 
-local Stack = setmetatable({}, Block)
-Stack.__index = Stack
-
-
-function Stack:new(o)
-    self = setmetatable(o, self)
-    return self
-end
+local Stack = Block:subclass('Stack')
 
 function Stack:doPlace(x, y, w, h)
     for _, child in ipairs(self) do

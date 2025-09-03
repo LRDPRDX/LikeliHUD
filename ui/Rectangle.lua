@@ -1,12 +1,7 @@
 local UI = (...):gsub('Rectangle$', '')
 local Block = require(UI .. 'Block')
 
-local Rectangle = setmetatable({}, Block)
-Rectangle.__index = Rectangle
-
-function Rectangle:new(o)
-    return setmetatable(o, self)
-end
+local Rectangle = Block:subclass('Rectangle')
 
 function Rectangle:doSize()
     return { x = self.w, y = self.h }
