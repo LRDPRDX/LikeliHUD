@@ -43,13 +43,16 @@ function Block:size()
         self._size = self:doSize()
     end
 
-    return self._size.x + self.pad, self._size.y + self.pad
+    return {
+        x = self._size.x + self.pad,
+        y = self._size.y + self.pad,
+    }
 end
 
 function Block:place(x, y, w, h)
     self._cell = { x = x, y = y, w = w, h = h }
 
-    local sx, sy = self:size()
+    local s = self:size()
 
     -- Take the drawOn into account
     w = self.drawOn.width  or (w - self.drawOn.x)
@@ -70,18 +73,18 @@ function Block:place(x, y, w, h)
                 item.drawOn = zoom(drawArea, self.drawMap.zoom)
             end
         end
-        item:place(self.x, self.y, sx, sy)
+        item:place(self.x, self.y, s.x, s.y)
     end
 end
 
 function Block:doPlace(x, y, w, h)
-    local sx, sy = self:size()
+    local s = self:size()
 
     -- Initial position at the center of the enclosing cell
-    self.x = round(x + (w - sx) / 2)
-    self.y = round(y + (h - sy) / 2)
+    self.x = round(x + (w - s.x) / 2)
+    self.y = round(y + (h - s.y) / 2)
 
-    if w < sx or h < sy then
+    if w < s.x or h < s.y then
        print("Warning: the size of the element exceeds its cell bounds")
     end
 
@@ -91,11 +94,11 @@ function Block:doPlace(x, y, w, h)
         end,
 
         ['right']  = function()
-            self.x = x + (w - sx) - self.pad
+            self.x = x + (w - s.x) - self.pad
         end,
 
         ['bottom'] = function()
-            self.y = y + (h - sy) - self.pad
+            self.y = y + (h - s.y) - self.pad
         end,
 
         ['top']    = function()

@@ -14,8 +14,10 @@ end
 
 function Label:doSize()
     local font = love.graphics.getFont()
-    return { x = font:getWidth(self.maxText),
-             y = font:getHeight(self.maxText) }
+    return {
+        x = font:getWidth(self.maxText),
+        y = font:getHeight(self.maxText),
+    }
 end
 
 function Label:doDraw()

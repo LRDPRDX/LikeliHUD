@@ -27,8 +27,8 @@ local function preplace (self)
         local maxSY = nil
         for c = 1, self.columns do
             if grid[r][c] then
-                local _, y = grid[r][c]:size()
-                maxSY = maxSY and math.max(maxSY, y) or y
+                local s = grid[r][c]:size()
+                maxSY = maxSY and math.max(maxSY, s.y) or s.y
             end
         end
 
@@ -47,8 +47,8 @@ local function preplace (self)
         local maxSX = nil
         for r = 1, self.rows do
             if grid[r][c] then
-                local x, _ = grid[r][c]:size()
-                maxSX = maxSX and math.max(maxSX, x) or x
+                local s = grid[r][c]:size()
+                maxSX = maxSX and math.max(maxSX, s.x) or s.x
             end
         end
 
@@ -90,13 +90,13 @@ function Layout:doPlace(x, y, w, h)
 
     local grid = self:gridView()
 
-    local usedX, usedY = self:size()
+    local usedS = self:size()
 
     local rowsToFill, columnsToFill = preplace(self)
     local nRowsToFill, nColumnsToFill = len(rowsToFill), len(columnsToFill)
 
-    local qW, rW = mod(w - usedX, nColumnsToFill)
-    local qH, rH = mod(h - usedY, nRowsToFill)
+    local qW, rW = mod(w - usedS.x, nColumnsToFill)
+    local qH, rH = mod(h - usedS.y, nRowsToFill)
 
     -- Add extra space to the cells
     local curY = y + self.spacing
@@ -130,8 +130,8 @@ function Layout:doSize()
         local maxSY = nil
         for c = 1, self.columns do
             if grid[r][c] then
-                local _, y = grid[r][c]:size()
-                maxSY = maxSY and math.max(maxSY, y) or y
+                local s = grid[r][c]:size()
+                maxSY = maxSY and math.max(maxSY, s.y) or s.y
             end
         end
 
@@ -144,8 +144,8 @@ function Layout:doSize()
         local maxSX = nil
         for r = 1, self.rows do
             if grid[r][c] then
-                local x, _ = grid[r][c]:size()
-                maxSX = maxSX and math.max(maxSX, x) or x
+                local s = grid[r][c]:size()
+                maxSX = maxSX and math.max(maxSX, s.x) or s.x
             end
         end
 

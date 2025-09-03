@@ -13,9 +13,9 @@ function Stack:doSize()
     local maxSX, maxSY = 0, 0
 
     for _, child in ipairs(self) do
-        local sx, sy = child:size()
-        maxSX = (sx > maxSX) and sx or maxSX
-        maxSY = (sy > maxSY) and sy or maxSY
+        local s = child:size()
+        maxSX = (s.x > maxSX) and s.x or maxSX
+        maxSY = (s.y > maxSY) and s.y or maxSY
     end
 
     return { x = maxSX, y = maxSY }
