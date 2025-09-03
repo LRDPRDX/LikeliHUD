@@ -13,8 +13,22 @@ local function len (array)
     return n
 end
 
+local function gridView (self)
+    local grid = {}
+
+    for r = 1, self.rows do
+        grid[r] = {}
+        for c = 1, self.columns do
+            local i = (r - 1) * self.columns + c
+            grid[r][c] = self[i]
+        end
+    end
+
+    return grid
+end
+
 local function preplace (self)
-    local grid = self.gridView(self)
+    local grid = gridView(self)
 
     for _, child in ipairs(self) do
         child._cell = {}
@@ -71,24 +85,10 @@ function Layout:new()
     self.spacing    = self.spacing  or 10
 end
 
-function Layout:gridView()
-    local grid = {}
-
-    for r = 1, self.rows do
-        grid[r] = {}
-        for c = 1, self.columns do
-            local i = (r - 1) * self.columns + c
-            grid[r][c] = self[i]
-        end
-    end
-
-    return grid
-end
-
 function Layout:doPlace(x, y, w, h)
     if #self == 0 then return end
 
-    local grid = self:gridView()
+    local grid = gridView(self)
 
     local usedS = self:size()
 
@@ -123,7 +123,7 @@ end
 function Layout:doSize()
     if #self == 0 then return { x = 0, y = 0 } end
 
-    local grid = self:gridView()
+    local grid = gridView(self)
 
     local sy = 0
     for r = 1, self.rows do
