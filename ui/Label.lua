@@ -1,20 +1,15 @@
 local UI = (...):gsub('Label$', '')
 local Block = require(UI .. 'Block')
 
-local Label = setmetatable({}, Block)
-Label.__index = Label
+local Label = Block:subclass('Label')
 
-function Label:new(o)
-    self = setmetatable(o, self)
-
-    self.text    = self.text or ''
+function Label:new()
+    self.text    = self.text    or ''
     self.maxText = self.maxText or self.text
 
     if #self.maxText < #self.text then
         self.maxText = self.text
     end
-
-    return self
 end
 
 function Label:doSize()

@@ -63,17 +63,12 @@ local function preplace (self)
     return rowsToFill, columnsToFill
 end
 
-local Layout = setmetatable({}, Block)
-Layout.__index = Layout
+local Layout = Block:subclass('Layout')
 
-function Layout:new(o)
-    self = setmetatable(o, self)
-
+function Layout:new()
     self.rows       = self.rows     or 1
     self.columns    = self.columns  or 1
     self.spacing    = self.spacing  or 10
-
-    return self
 end
 
 function Layout:gridView()

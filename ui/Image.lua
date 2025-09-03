@@ -9,7 +9,6 @@ local function loadDrawMap (path)
 
     local f, e = love.filesystem.load(path)
     if e then
---         print(e)
         return nil
     end
 
@@ -21,12 +20,9 @@ local function loadDrawMap (path)
     return map
 end
 
-local Image = setmetatable({}, Block)
-Image.__index = Image
+local Image = Block:subclass('Image')
 
-function Image:new(o)
-    self = setmetatable(o, self)
-
+function Image:new()
     self.image        = love.graphics.newImage(self.path)
     self.drawMap      = loadDrawMap(self.path)
 
@@ -41,13 +37,12 @@ function Image:new(o)
     for r = 1, self.quad.layout.rows do
         local xQuad = 0
         for c = 1, self.quad.layout.columns do
-            table.insert(self.quad.quads, love.graphics.newQuad(xQuad, yQuad, quadW, quadH, self.image))
+            table.insert(self.quad.quads,
+                         love.graphics.newQuad(xQuad, yQuad, quadW, quadH, self.image))
             xQuad = xQuad + quadW
         end
         yQuad = yQuad + quadH
     end
-
-    return self
 end
 
 function Image:doSize()
