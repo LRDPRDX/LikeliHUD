@@ -77,6 +77,9 @@ local function preplace (self)
     return rowsToFill, columnsToFill
 end
 
+-- ********************
+-- ****** LAYOUT ******
+-- ********************
 local Layout = Block:subclass('Layout')
 
 function Layout:new()
@@ -86,7 +89,9 @@ function Layout:new()
 end
 
 function Layout:doPlace(x, y, w, h)
-    if #self == 0 then return end
+    if #self == 0 then
+        return
+    end
 
     local grid = gridView(self)
 

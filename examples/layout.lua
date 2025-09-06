@@ -68,58 +68,58 @@ local layout = ui.Layout {
                 columns = 3,
 
                 ui.Label {
-                    text   = 'l + t',
+                    text   = '|left + top|',
                     align  = 'left+top',
-                    pad    = 5,
+                    pad    = 10,
                 },
 
                 ui.Label {
-                    text   = 't',
+                    text   = '|top|',
                     align  = 'top',
-                    pad    = 5,
+                    pad    = 10,
                 },
 
                 ui.Label {
-                    text   = 't + r',
+                    text   = '|top + right|',
                     align  = 'top+right',
-                    pad    = 5,
+                    pad    = 10,
                 },
 
                 ui.Label {
-                    text   = 'l',
+                    text   = '|left|',
                     align  = 'left',
-                    pad    = 5,
+                    pad    = 10,
                 },
 
                 ui.Label {
-                    text   = 'c',
+                    text   = '|center|',
                     align  = 'center',
                     color  = { 1, 0, 0 },
-                    pad    = 5,
+                    pad    = 10,
                 },
 
                 ui.Label {
-                    text   = 'r',
+                    text   = '|right|',
                     align  = 'right',
-                    pad    = 5,
+                    pad    = 10,
                 },
 
                 ui.Label {
-                    text   = 'l + b',
+                    text   = '|left + bottom|',
                     align  = 'left+bottom',
-                    pad    = 5,
+                    pad    = 10,
                 },
 
                 ui.Label {
-                    text   = 'b',
+                    text   = '|bottom|',
                     align  = 'bottom',
-                    pad    = 5,
+                    pad    = 10,
                 },
 
                 ui.Label {
-                    text   = 'r + b',
+                    text   = '|right + bottom|',
                     align  = 'right+bottom',
-                    pad    = 5,
+                    pad    = 10,
                 },
             }
         },
@@ -164,7 +164,49 @@ local layout = ui.Layout {
         },
 
         ui.Image {
-            path   = 'images/lua-logo-64.png',
+            path   = 'images/offset.png',
+
+            on = {
+                ui.Label {
+                    text = '1',
+                    offset = {
+                        y      = 10,
+                        height = 24,
+                        width  = 160,
+                        x      = 20,
+                    },
+                },
+
+                ui.Label {
+                    text = '2',
+                    offset = {
+                        y      = 56,
+                        height = 36,
+                        width  = 36,
+                        x      = 20,
+                    },
+                },
+
+                ui.Label {
+                    text = '3',
+                    offset = {
+                        y      = 94,
+                        height = 26,
+                        width  = 84,
+                        x      = 94,
+                    },
+                },
+
+                ui.Label {
+                    text = '4',
+                    offset = {
+                        y      = 150,
+                        height = 40,
+                        width  = 102,
+                        x      = 40,
+                    }
+                }
+            }
         },
 
         ui.Image {

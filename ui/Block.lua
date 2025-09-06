@@ -5,30 +5,21 @@ local function round (x)
     return math.floor(x + 0.5)
 end
 
-local function zoom (t, zoom)
-    if not zoom or zoom == 1 then
-        return t
-    end
-
-    for k, v in pairs(t) do
-        t[k] = v * zoom
-    end
-
-    return t
-end
-
 local function drawBorder (block)
     love.graphics.rectangle('line',
                             block._cell.x, block._cell.y, block._cell.w, block._cell.h)
 end
 
+-- *******************
+-- ****** BLOCK ******
+-- *******************
 local Block = Class:subclass('Block')
 
 function Block:new()
     self.visible = self.visible or true
     self.pad     = self.pad     or 0
     self.align   = self.align   or 'center'
-    self.drawOn  = self.drawOn  or { x = 0, y = 0 }
+    self.offset  = self.offset  or { x = 0, y = 0 }
     self.fill    = self.fill    or { x = true, y = true }
 
     if self.signals then
@@ -44,21 +35,22 @@ function Block:size()
     end
 
     return {
-        x = self._size.x + self.pad,
-        y = self._size.y + self.pad,
+        x = self._size.x,
+        y = self._size.y,
     }
 end
 
 function Block:place(x, y, w, h)
+    -- Enclosing cell of the block
     self._cell = { x = x, y = y, w = w, h = h }
 
     local s = self:size()
 
-    -- Take the drawOn into account
-    w = self.drawOn.width  or (w - self.drawOn.x)
-    h = self.drawOn.height or (h - self.drawOn.y)
-    x = x + self.drawOn.x
-    y = y + self.drawOn.y
+    -- Take offset into account
+    x = x + self.offset.x
+    y = y + self.offset.y
+    w = self.offset.width  or (w - self.offset.x)
+    h = self.offset.height or (h - self.offset.y)
 
     self:doPlace(x, y, w, h)
 
@@ -66,13 +58,8 @@ function Block:place(x, y, w, h)
         return
     end
 
+    -- Place blocks that use this block as a coordinate reference
     for _, item in ipairs(self.on) do
-        if self.drawMap then
-            local drawArea = self.drawMap[item.drawOn]
-            if drawArea then
-                item.drawOn = zoom(drawArea, self.drawMap.zoom)
-            end
-        end
         item:place(self.x, self.y, s.x, s.y)
     end
 end
@@ -141,8 +128,8 @@ function Block:traverse()
         end
 
         if block.on then
-            for _, childOn in ipairs(block.on) do
-                table.insert(stack, childOn)
+            for _, child in ipairs(block.on) do
+                table.insert(stack, child)
             end
         end
         return block

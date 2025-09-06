@@ -1,6 +1,9 @@
 local UI    = (...):gsub('Stack$', '')
 local Block = require(UI .. 'Block')
 
+-- *******************
+-- ****** STACK ******
+-- *******************
 local Stack = Block:subclass('Stack')
 
 function Stack:doPlace(x, y, w, h)

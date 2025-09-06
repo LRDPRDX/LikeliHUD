@@ -1,6 +1,9 @@
 local UI = (...):gsub('Label$', '')
 local Block = require(UI .. 'Block')
 
+-- *******************
+-- ****** LABEL ******
+-- *******************
 local Label = Block:subclass('Label')
 
 function Label:new()
