@@ -41,7 +41,7 @@ local function preplace (self)
         local maxSY = nil
         for c = 1, self.columns do
             if grid[r][c] then
-                local s = grid[r][c]:size()
+                local s = grid[r][c]:size(true)
                 maxSY = maxSY and math.max(maxSY, s.y) or s.y
             end
         end
@@ -61,7 +61,7 @@ local function preplace (self)
         local maxSX = nil
         for r = 1, self.rows do
             if grid[r][c] then
-                local s = grid[r][c]:size()
+                local s = grid[r][c]:size(true)
                 maxSX = maxSX and math.max(maxSX, s.x) or s.x
             end
         end
@@ -95,7 +95,7 @@ function Layout:doPlace(x, y, w, h)
 
     local grid = gridView(self)
 
-    local usedS = self:size()
+    local usedS = self:size(true)
 
     local rowsToFill, columnsToFill = preplace(self)
     local nRowsToFill, nColumnsToFill = len(rowsToFill), len(columnsToFill)
@@ -130,12 +130,13 @@ function Layout:doSize()
 
     local grid = gridView(self)
 
+    -- Height is the sum of maximum heights in each row
     local sy = 0
     for r = 1, self.rows do
         local maxSY = nil
         for c = 1, self.columns do
             if grid[r][c] then
-                local s = grid[r][c]:size()
+                local s = grid[r][c]:size(true)
                 maxSY = maxSY and math.max(maxSY, s.y) or s.y
             end
         end
@@ -144,12 +145,13 @@ function Layout:doSize()
         sy = sy + maxSY
     end
 
+    -- Width is the sum of maximum widths in each column
     local sx = 0
     for c = 1, self.columns do
         local maxSX = nil
         for r = 1, self.rows do
             if grid[r][c] then
-                local s = grid[r][c]:size()
+                local s = grid[r][c]:size(true)
                 maxSX = maxSX and math.max(maxSX, s.x) or s.x
             end
         end

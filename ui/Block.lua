@@ -19,7 +19,6 @@ function Block:new()
     self.visible = self.visible or true
     self.pad     = self.pad     or 0
     self.align   = self.align   or 'center'
-    self.offset  = self.offset  or { x = 0, y = 0 }
     self.fill    = self.fill    or { x = true, y = true }
 
     if self.signals then
@@ -29,9 +28,16 @@ function Block:new()
     end
 end
 
-function Block:size()
+function Block:size(includePad)
     if not self._size then
         self._size = self:doSize()
+    end
+
+    if includePad == true then
+        return {
+            x = self._size.x + 2 * self.pad,
+            y = self._size.y + 2 * self.pad,
+        }
     end
 
     return {
@@ -46,11 +52,22 @@ function Block:place(x, y, w, h)
 
     local s = self:size()
 
-    -- Take offset into account
-    x = x + self.offset.x
-    y = y + self.offset.y
-    w = self.offset.width  or (w - self.offset.x)
-    h = self.offset.height or (h - self.offset.y)
+    if self.offset then
+        x = x + self.offset.x
+        y = y + self.offset.y
+        w = self.offset.width
+        h = self.offset.height
+    end
+
+    x = x + self.pad
+    y = y + self.pad
+    w = w - 2 * self.pad
+    h = h - 2 * self.pad
+
+    if w < s.x or h < s.y then
+        print(w, h, s.x, s.y)
+        print("Warning: the size of the element exceeds its cell bounds")
+    end
 
     self:doPlace(x, y, w, h)
 
@@ -71,25 +88,21 @@ function Block:doPlace(x, y, w, h)
     self.x = round(x + (w - s.x) / 2)
     self.y = round(y + (h - s.y) / 2)
 
-    if w < s.x or h < s.y then
-       print("Warning: the size of the element exceeds its cell bounds")
-    end
-
     local move = {
         ['left']   = function()
-            self.x = x + self.pad
+            self.x = x
         end,
 
         ['right']  = function()
-            self.x = x + (w - s.x) - self.pad
+            self.x = x + (w - s.x)
         end,
 
         ['bottom'] = function()
-            self.y = y + (h - s.y) - self.pad
+            self.y = y + (h - s.y)
         end,
 
         ['top']    = function()
-            self.y = y + self.pad
+            self.y = y
         end
     }
 
