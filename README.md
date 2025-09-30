@@ -1,5 +1,10 @@
 # A simple UI library written in Lua for the LÖVE2D framework
 
+[![Docs](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml/badge.svg)]
+(https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml)
+[![pages-build-deployment](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment/badge.svg)]
+(https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment)
+
 :warning: It's raw, not tested, not polished. There are gaps to be filled :warning:
 
 ## Give it a taste
@@ -47,9 +52,8 @@ end
     - `Label`
 - Declarative approach. Similar to QML.
 - Grid layout. Nested layouts are possible.
-- Auto alignment. Alignment hints : `center`, `top`, `bottom`, `left` or
-  combination.
-- Each element inside the layout can be set to fill `width`, `height`, both or
+- Auto alignment. Alignment hints : `center`, `top`, `bottom`, `left` or a combination.
+- Each element inside a layout can be set to fill `width`, `height`, both or
   none.
 - Communication with the external logic through the signals "attached" to the
   elements
@@ -62,7 +66,7 @@ Run `main.lua` :
 love path/to/likelihud
 ```
 
-and press `1`, `2`, `3` to switch between examples.
+and press `1`, `2`, `3` to switch between examples. See the code [here](/examples).
 
 ### Layout
 
@@ -72,12 +76,13 @@ This is a demo (code [here](/main.lua)):
 
 ### Signals
 
-This is the simplest game ever written with LÖVE2D (code
-[here](/examples/o.lua)):
+This is the simplest game ever written with LÖVE2D (code [here](/examples/o.lua)):
 
 ![signals example](/gifs/o.gif)
 
-More examples later.
+### Documentation
+
+Documentation is available [here](https://lrdprdx.github.io/LikeliHUD/).
 
 ## Acknowledgements and similar projects
 
