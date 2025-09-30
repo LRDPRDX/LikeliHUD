@@ -1,9 +1,7 @@
 # A simple UI library written in Lua for the LÖVE2D framework
 
-[![Docs](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml/badge.svg)]
-(https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml)
-[![pages-build-deployment](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment/badge.svg)]
-(https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment)
+[![Docs](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml/badge.svg)](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml)
+[![pages-build-deployment](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment)
 
 :warning: It's raw, not tested, not polished. There are gaps to be filled :warning:
 
