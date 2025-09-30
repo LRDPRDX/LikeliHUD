@@ -14,10 +14,13 @@ local ui = require('ui')
 local layoutUI  = require('examples.layout')
 local simpleUI  = require('examples.simple')
 local oeUI      = require('examples.o')
+local squaresUI = require('examples.squares')
+local fillUI    = require('examples.fill')
+local startUI   = require('examples.start')
 local HUD       = nil
 
 local function updateHUD(newHUD)
-    w, h = love.window.getMode()
+    local w, h = love.window.getMode()
     HUD = newHUD
     HUD:place(screen.margin, screen.margin, w - 2 * screen.margin, h - 2 * screen.margin)
 end
@@ -31,6 +34,8 @@ local keys = {
         ['1'] = function() updateHUD(layoutUI) end,
         ['2'] = function() updateHUD(simpleUI) end,
         ['3'] = function() updateHUD(oeUI) end,
+        ['4'] = function() updateHUD(squaresUI) end,
+        ['5'] = function() updateHUD(fillUI) end,
         ['q'] = function() love.event.quit() end,
     },
     released = {
@@ -40,7 +45,7 @@ local keys = {
 
 function love.load()
     love.window.setMode(screen.w, screen.h, { resizable = true })
-    updateHUD(layoutUI)
+    updateHUD(startUI)
 end
 
 function love.resize(w, h)

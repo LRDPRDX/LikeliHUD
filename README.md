@@ -66,10 +66,9 @@ and press `1`, `2`, `3` to switch between examples.
 
 ### Layout
 
-This example is just a demo of the layouting system (code
-[here](/examples/layout.lua)):
+This is a demo (code [here](/main.lua)):
 
-![layout example](/gifs/layout.gif)
+![demo](/gifs/demo.gif)
 
 ### Signals
 

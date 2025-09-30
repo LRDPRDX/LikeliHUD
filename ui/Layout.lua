@@ -1,3 +1,90 @@
+--- Used to place blocks in a grid.
+--
+-- Places child blocks in a grid `rows` by `columns`. _NOTE:_ strictly speaking it places the
+-- enclosing cells of its child elements in a grid - the blocks themselves may stay "unaligned"
+-- because of different size and/or values of the `align` property (see Fig. 1).
+--    Fig. 1
+--
+--      ■───▶︎ columns: 1, 2, 3, ...
+--      │
+--      ▼
+--    rows: 1, 2, 3, ...
+--
+--                      Enclosing cell of a block
+--                                ┆
+--                                ┆
+--                                ┆
+--                                ┆
+--    ■───────────────────────────┆───────────────────╮
+--    │          ▲                ┆                   │
+--    │          S                ┆                   │
+--    │          ▼                ▼                   │
+--    │       ■───────────╮       ■───────────╮       │
+--    │       │           │       │           │       │
+--    │◀︎  S  ▶︎│  ╭─────╮  │◀︎  S  ▶︎│           │◀︎  S  ▶︎│
+--    │       │  │A    b  │       │    ╭─────╮│       │
+--    │       │  ╰──a──╯  │       │    │B    ││       │
+--    │       │           │       │    ╰─────╯│       │
+--    │       ╰───────────╯       ╰───────────╯       │
+--    │          ▲                                    │
+--    │          S                                    │
+--    │          ▼                                    │
+--    │       ■───────────╮       ■───────────╮       │
+--    │       │           │       │╭─────╮    │       │
+--    │       │           │       ││C    │    │       │
+--    │       │╭─────╮    │       │╰─────╯    │       │
+--    │       ││D    │    │       │           │       │
+--    │       │╰─────╯    │       │           │       │
+--    │       ╰───────────╯       ╰───────────╯       │
+--    │          ▲                                    │
+--    │          S                                    │
+--    │          ▼                                    │
+--    ╰───────────────────────────────────────────────╯
+--
+-- The code which produces the UI shown in Fig. 1 is the following:
+--
+--    local layout = ui.Layout {
+--      rows    = 2,
+--      columns = 2,
+--      spacing = S,
+--
+--      ui.Rectangle {
+--        id = 'A',
+--
+--        w = a,
+--        h = b,
+--
+--        align = 'center',
+--      },
+--
+--      ui.Rectangle {
+--        id = 'B',
+--
+--        w = a,
+--        h = b,
+--
+--        align = 'bottom + right',
+--      },
+--
+--      ui.Rectangle {
+--        id = 'C',
+--
+--        w = a,
+--        h = b,
+--
+--        align = 'bottom + left',
+--      },
+--
+--      ui.Rectangle {
+--        id = 'D',
+--
+--        w = a,
+--        h = b,
+--
+--        align = 'top + left',
+--      },
+--    }
+-- @classmod Layout
 local UI    = (...):gsub('Layout$', '')
 local Block = require(UI .. 'Block')
 
@@ -77,11 +164,63 @@ local function preplace (self)
     return rowsToFill, columnsToFill
 end
 
--- ********************
--- ****** LAYOUT ******
--- ********************
+--- Represents a layout.
+-- @type Layout
 local Layout = Block:subclass('Layout')
 
+--- Constructor.
+-- These are properties (in addition to the list in `Block:new`) relevant for this type of block:
+--
+-- * `rows` : a positive integer. The number of rows in the layout. Default is 1.
+-- * `columns` : a positive integer. The number of columns in the layout. Default is 1.
+-- * `spacing` :  a non-negative integer. The minimum distance between columns/rows _and_ between
+-- the children's enclosing cells and the layout's one. Default is 10.
+-- * `align` : ignored.
+-- * `fill` : for a child element it means the element's enclosing cell fills empty space of the
+-- layout's enclosing cell if any:
+--        local layout = {
+--          columns = 1,
+--
+--          ui.Rectangle {
+--            id = 'A',
+--
+--            w = a,
+--            h = b,
+--
+--            fill = { x = false, y = true },
+--          },
+--
+--          ui.Rectangle {
+--            id = 'B',
+--
+--            w = a,
+--            h = b,
+--
+--            fill = { x = true, y = false },
+--          }
+--        }
+--
+--        layout:place(X, Y, W, H)
+-- which results in the following diagram
+--        Fig. 2
+--
+--        (X, Y)
+--          ■────────────────────────────────────╮
+--          │■───────────╮■─────────────────────╮│
+--          ││           ││                     ││
+--          ││  ╭─────╮  ││       ╭─────╮       ││
+--          ││  │A    b  ││       │B    b       │H
+--          ││  ╰──a──╯  ││       ╰──a──╯       ││
+--          ││           ││                     ││
+--          │╰───────────╯╰─────────────────────╯│
+--          ╰─────────────────W──────────────────╯
+-- _NOTE:_ as `Layout` places the enclosing cells of its child elements in a grid, if there is at
+-- least one element in a row (column) that has `fill.y` (`fill.x`) equal to `true` then virtually
+-- all elements in that row (column) fills the `y` (`x`) axis also. For example, in Fig. 2 you
+-- can see that the **B**'s enclosing cell fills the y-axis despite the fact it
+-- has `fill.y == false`. This is because **A** has `fill.y == true`.
+--
+-- See the `fill.lua` example to give it a taste.
 function Layout:new()
     self.rows       = self.rows     or 1
     self.columns    = self.columns  or 1

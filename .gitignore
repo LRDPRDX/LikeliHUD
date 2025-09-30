@@ -1,2 +1,5 @@
 *.aseprite
 *.sw[a-z]
+
+# Documentation
+doc/

@@ -1,10 +1,54 @@
+--- Used to place one block over another.
+--
+-- Places child blocks one "over" another. You already know how to place one block over another
+-- using the `on` property. This block just puts every child element inside its enclosing cell
+-- one by one, one over another. For example, provided you have this image:
+--
+--    Fig. 1
+--
+--    ┌────────┐
+--    │  ▞▚▞▚  │
+--    │  ▚  ▞  │
+--    │   ▚▞   │
+--    └────────┘
+--
+-- doing this
+--
+--    local stack = ui.Stack {
+--      ui.Image {
+--        path = 'foo.png',
+--      },
+--
+--      ui.Label {
+--        text = 'This is a stack'
+--      },
+--    }
+--
+--    stack:place(0, 0, 100, 100)
+--    stack:draw()
+--
+-- will result in
+--    Fig. 2
+--
+--      ┌────────┐
+--      │  ▞▚▞▚  │
+--    This is a stack
+--      │   ▚▞   │
+--      └────────┘
+-- @classmod Stack
 local UI    = (...):gsub('Stack$', '')
 local Block = require(UI .. 'Block')
 
--- *******************
--- ****** STACK ******
--- *******************
+--- Represents a stack of elements.
+-- @type Stack
 local Stack = Block:subclass('Stack')
+
+--- Constructor.
+-- There are no special properties for this type of a block. However,
+--
+-- * `align` : ignored.
+function Stack:new()
+end
 
 function Stack:doPlace(x, y, w, h)
     for _, child in ipairs(self) do
