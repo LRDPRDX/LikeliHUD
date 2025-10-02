@@ -537,6 +537,4 @@ function Block:doPlace(x, y, w, h)
     end
 end
 
-
-
 return Block
