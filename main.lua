@@ -1,4 +1,4 @@
-local Signal = require('libraries.hump.signal')
+local Signal = require('hump.signal')
 
 local font = love.graphics.newFont('fonts/moder-dos-437.ttf', 20)
 love.graphics.setFont(font)

@@ -56,6 +56,17 @@ end
 - Communication with the external logic through the signals "attached" to the
   elements
 
+## Dependencies
+
+ - [hump](https://hump.readthedocs.io/en/latest/signal.html) for signals
+ - [subclass](https://github.com/LRDPRDX/lua-class) (used internally)
+
+## Installation
+
+```bash
+luarocks install likelihud
+```
+
 ## Examples
 
 Run `main.lua` :

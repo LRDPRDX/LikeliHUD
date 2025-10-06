@@ -155,8 +155,8 @@
 -- See below for details.
 -- @classmod Block
 
-local Signal = require('libraries.hump.signal')
-local Class  = require('libraries.class.class')
+local Signal = require('hump.signal')
+local Class  = require('subclass')
 
 local function round (x)
     return math.floor(x + 0.5)
