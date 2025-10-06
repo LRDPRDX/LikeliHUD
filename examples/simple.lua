@@ -1,4 +1,4 @@
-local ui = require('ui')
+local ui = require('likelihud')
 
 local simple = ui.Layout {
     rows    = 2,

@@ -35,12 +35,12 @@ dependencies = {
 build = {
    type = 'builtin',
    modules = {
-      ['likelihud']           = 'ui/init.lua',
-      ['likelihud.Block']     = 'ui/Block.lua',
-      ['likelihud.Image']     = 'ui/Image.lua',
-      ['likelihud.Label']     = 'ui/Label.lua',
-      ['likelihud.Layout']    = 'ui/Layout.lua',
-      ['likelihud.Rectangle'] = 'ui/Rectangle.lua',
-      ['likelihud.Stack']     = 'ui/Stack.lua',
+      ['likelihud']           = 'likelihud/init.lua',
+      ['likelihud.Block']     = 'likelihud/Block.lua',
+      ['likelihud.Image']     = 'likelihud/Image.lua',
+      ['likelihud.Label']     = 'likelihud/Label.lua',
+      ['likelihud.Layout']    = 'likelihud/Layout.lua',
+      ['likelihud.Rectangle'] = 'likelihud/Rectangle.lua',
+      ['likelihud.Stack']     = 'likelihud/Stack.lua',
    },
 }

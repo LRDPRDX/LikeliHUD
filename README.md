@@ -8,7 +8,7 @@
 ## Give it a taste
 
 ```lua
-local ui = require('ui')
+local ui = require('likelihud')
 
 local simple = ui.Layout {
     rows    = 2,
@@ -48,6 +48,7 @@ end
     - `Stack`
     - `Image`
     - `Label`
+    - `Rectangle`
 - Declarative approach. Similar to QML.
 - Grid layout. Nested layouts are possible.
 - Auto alignment. Alignment hints : `center`, `top`, `bottom`, `left` or a combination.

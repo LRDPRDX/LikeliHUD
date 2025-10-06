@@ -1,4 +1,4 @@
-local ui = require('ui')
+local ui = require('likelihud')
 
 local squares = ui.Rectangle {
     w = 300,

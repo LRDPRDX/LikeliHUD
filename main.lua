@@ -9,7 +9,7 @@ local screen = {
     margin  = 10,
 }
 
-local ui = require('ui')
+local ui = require('likelihud')
 
 local layoutUI  = require('examples.layout')
 local simpleUI  = require('examples.simple')
