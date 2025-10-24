@@ -1,5 +1,5 @@
 local package_name      = 'likelihud'
-local package_version   = '1.0'
+local package_version   = '1.1'
 local rockspec_revision = '1'
 
 rockspec_format = '3.0'
@@ -21,6 +21,7 @@ description = {
         * Layout
         * Rectangle
         * Stack
+        * ImageButton
    ]],
    homepage = 'https://lrdprdx.github.io/LikeliHUD',
    license  = 'MIT <http://opensource.org/licenses/MIT>',
@@ -35,12 +36,14 @@ dependencies = {
 build = {
    type = 'builtin',
    modules = {
-      ['likelihud']           = 'likelihud/init.lua',
-      ['likelihud.Block']     = 'likelihud/Block.lua',
-      ['likelihud.Image']     = 'likelihud/Image.lua',
-      ['likelihud.Label']     = 'likelihud/Label.lua',
-      ['likelihud.Layout']    = 'likelihud/Layout.lua',
-      ['likelihud.Rectangle'] = 'likelihud/Rectangle.lua',
-      ['likelihud.Stack']     = 'likelihud/Stack.lua',
+      ['likelihud']             = 'likelihud/init.lua',
+      ['likelihud.Block']       = 'likelihud/Block.lua',
+      ['likelihud.Image']       = 'likelihud/Image.lua',
+      ['likelihud.Label']       = 'likelihud/Label.lua',
+      ['likelihud.Layout']      = 'likelihud/Layout.lua',
+      ['likelihud.Rectangle']   = 'likelihud/Rectangle.lua',
+      ['likelihud.Stack']       = 'likelihud/Stack.lua',
+      ['likelihud.ImageButton'] = 'likelihud/ImageButton.lua',
+      ['likelihud.utils']       = 'likelihud/utils.lua',
    },
 }
