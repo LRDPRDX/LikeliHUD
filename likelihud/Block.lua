@@ -2,14 +2,18 @@
 --
 -- **Introduction**
 --
--- (words/letters in **bold** in this section refer to the ones in the Fig. 1 below)
+-- (words/letters in **bold** in this section refer to the ones in the Fig. 1
+-- below)
 --
--- * A _block_ is used to denote an element of a graphical user interface in this library
--- (**BLOCK**), another famous name for this is _widget_ but I will be using _element_ / _block_
+-- * A _block_ is used to denote an element of a graphical user interface in
+-- this library
+-- (**BLOCK**), another famous name for this is _widget_ but I will be using
+-- _element_ / _block_
 -- interchangeable here.
 -- * The coordinate system as it is in
 -- [love2d](https://www.love2d.org/wiki/love.graphics).
--- * A _rectangle_ we define by the coordinate of its upper-left corner and its width
+-- * A _rectangle_ we define by the coordinate of its upper-left corner and
+-- its width
 -- and height. I.e. it is a tuple (x, y, w, h).
 -- In Lua a rectangle would be a table with 4 keys `x, y, w, h`:
 --    local rectangle = {
@@ -18,11 +22,15 @@
 --      w = 100,
 --      h = 50,
 --    }
--- * The _enclosing cell_ of a block is a rectangle which the block is placed in, **(X, Y, W, H)**
+-- * The _enclosing cell_ of a block is a rectangle which the block is placed
+-- in, **(X, Y, W, H)**
 -- . In order to place the block use its `place` method. _NOTE:_ you are
--- not supposed to use this method on every block in your GUI, you usually call it once on the root
--- block. See `Layout`. So placing an element on the screen requires not only the
--- coordinate but the whole rectangle. _NOTE:_ `place` itself doesn't draw anything. Use the
+-- not supposed to use this method on every block in your GUI, you usually
+-- call it once on the root
+-- block. See `Layout`. So placing an element on the screen requires not only
+-- the
+-- coordinate but the whole rectangle. _NOTE:_ `place` itself doesn't draw
+-- anything. Use the
 -- block's `draw` method to actually draw it.
 --
 -- `likeliHUD` was created with the following objectives:
@@ -31,7 +39,8 @@
 -- * Everything is a rectangle
 -- * Automatic layout (but see the `offset` parameter below)
 --
--- A typical user workflow consists of at least 3 steps when using this library
+-- A typical user workflow consists of at least 3 steps when using this
+-- library
 --
 -- * Create
 -- * Place
@@ -39,12 +48,16 @@
 --
 -- **Create**
 --
--- _Declarative construction_ means you create a _block tree_ which represents your UI.
+-- _Declarative construction_ means you create a _block tree_ which represents
+-- your UI.
 -- Blocks can have properties and embedded (children) blocks.
--- _Properties_ go in the hash part of the block (in the end every block is a Lua table)
--- i.e. key-value pairs; _children_ elements is the array part of the block. However, see the
+-- _Properties_ go in the hash part of the block (in the end every block is a
+-- Lua table)
+-- i.e. key-value pairs; _children_ elements is the array part of the block.
+-- However, see the
 -- `on` property in the description of the `new` method. A simple example of
--- an object tree which has the following diagram (properties and their values are written in the
+-- an object tree which has the following diagram (properties and their values
+-- are written in the
 -- parentheses)
 --
 --    A1 (a: 1)
@@ -88,11 +101,14 @@
 --
 -- **Place**
 --
--- This library treats every block (**BLOCK**) as a rectangle of some width **a** and
+-- This library treats every block (**BLOCK**) as a rectangle of some width
+-- **a** and
 -- height **b**
--- placed inside its enclosing cell **(X, Y, W, H)**. It may also have some pads **pad** and/or
+-- placed inside its enclosing cell **(X, Y, W, H)**. It may also have some
+-- pads **pad** and/or
 -- offset **(Xo, Yo, Wo, Ho)**.
--- Below you can see a figure which we'll be referring to in this documentation a lot:
+-- Below you can see a figure which we'll be referring to in this
+-- documentation a lot:
 --
 --    Fig.1
 --                         Enclosing cell
@@ -142,14 +158,18 @@
 --
 --    BLOCK:place(X, Y, W, H)
 --
--- One more time: to place an element you call its `place` method with the enclosing cell as an
--- argument (actually it is 4 arguments, but you get the idea). Don't be afraid - you are not
--- going to call this method on each element in your UI - usually only the root element is placed
+-- One more time: to place an element you call its `place` method with the
+-- enclosing cell as an
+-- argument (actually it is 4 arguments, but you get the idea). Don't be
+-- afraid - you are not
+-- going to call this method on each element in your UI - usually only the
+-- root element is placed
 -- explicitly.
 --
 -- **Draw**
 --
--- In order to draw an element call its `draw` method. Similarly to `place` you usually call it
+-- In order to draw an element call its `draw` method. Similarly to `place`
+-- you usually call it
 -- once (per frame) for the root element.
 --
 -- See below for details.
@@ -158,8 +178,50 @@
 local Signal = require('hump.signal')
 local Class  = require('subclass')
 
-local function round (x)
-    return math.floor(x + 0.5)
+local UI    = (...):gsub('Block$', '')
+local utils = require(UI .. 'utils')
+
+local function initMouseFSM(self)
+    local f = function (g)
+        return g and function ()
+            g(self)
+        end
+    end
+
+    local m = self.mouse
+
+    return utils.FSM {
+        events = {
+            'press',
+            'inside',
+            'outside',
+            'release',
+        },
+
+        states = {
+            'idle',
+            'hovered',
+            'pressed'
+        },
+
+        transitions = {
+            [ 'press' ]   = {
+                ['hovered'] = { state = 'pressed', action = f(m.onPress) }
+            },
+            [ 'inside' ]  = {
+                ['idle']    = { state = 'hovered', action = f(m.onEnter) }
+            },
+            [ 'outside' ] = {
+                ['pressed'] = { state = 'idle', action = f(m.onExit) },
+                ['hovered'] = { state = 'idle', action = f(m.onExit) },
+            },
+            [ 'release' ] = {
+                ['pressed'] = { state = 'hovered', action = f(m.onClick) }
+            },
+        },
+
+        initial = 'idle'
+    }
 end
 
 local function drawBorder (block)
@@ -172,28 +234,41 @@ end
 local Block = Class:subclass('Block')
 
 --- Constructor.
--- The user is not supposed to explicitly call this method. It's called automatically when an
--- instance of Block is created. See [here](https://lrdprdx.github.io/lua-class/) for details.
--- When created a block can be given properties. The list of the properties below is common for
--- all blocks in this library. _NOTE:_ though can be given some properties might be ignored by
--- a block either because of the type of the block and/or different circumstances. F.e. the
--- `fill` property only makes sense when the block is placed inside a `Layout`.
+-- The user is not supposed to explicitly call this method. It's called
+-- automatically when an
+-- instance of Block is created. See
+-- [here](https://lrdprdx.github.io/lua-class/) for details.
+-- When created a block can be given properties. The list of the properties
+-- below is common for
+-- all blocks in this library. _NOTE:_ though can be given some properties
+-- might be ignored by
+-- a block either because of the type of the block and/or different
+-- circumstances. F.e. the
+-- `fill` property only makes sense when the block is placed inside a
+-- `Layout`.
 --
 -- * `visible` : boolean.
--- `true` (default) means the element is visible (drawn). Otherwise it is not visible
--- * `color`: a color like in [love2d](https://www.love2d.org/wiki/love.graphics.setColor)
--- (the table variant). For different type of a block it has different meaning. See concrete
+-- `true` (default) means the element is visible (drawn). Otherwise it is not
+-- visible
+-- * `color`: a color like in
+-- [love2d](https://www.love2d.org/wiki/love.graphics.setColor)
+-- (the table variant). For different type of a block it has different
+-- meaning. See concrete
 -- type. Default is nil.
--- * `pad` : a non-negative number. The minimum gap between the block's border and the
+-- * `pad` : a non-negative number. The minimum gap between the block's border
+-- and the
 -- enclosing cell (see Fig. 1). It can be greater than the pad because of the
 -- `offset` parameter. _NOTE:_ the pad along the x-axis is eqaul to the pad
 -- along the y-axis.
 -- * `align` : Alignment of the block inside its enclosing cell.
 -- A string containing one or two words
--- `'center'` (default), `'top', 'bottom', 'left', 'right'` delimited by the `+` sign. For example,
+-- `'center'` (default), `'top', 'bottom', 'left', 'right'` delimited by the
+-- `+` sign. For example,
 -- `'top+right'` (equivalent to `'right+top'`).
--- _NOTE:_ this string must be consistent: it doesn't make sense to have something
--- like `'top+bottom'` (`'top'` will be set), or `'left+right'` (`'right'` will be set). In other
+-- _NOTE:_ this string must be consistent: it doesn't make sense to have
+-- something
+-- like `'top+bottom'` (`'top'` will be set), or `'left+right'` (`'right'`
+-- will be set). In other
 -- words there are only 9 options of alignment (* means default):
 --
 --        Fig.2
@@ -212,12 +287,17 @@ local Block = Class:subclass('Block')
 --        │ bottom + left  │   bottom   │ bottom + right │
 --        ╰────────────────┴────────────┴────────────────╯
 --
--- * `fill` : a table of the form `{ x = boolean, y = boolean }`. Tells whether the block should
--- occupy free space (along the corresponding axis) if placed inside a Layout. See `Layout:new`.
--- * `offset` : a rectangle **(Xo, Yo, Wo, Ho)**. Modifies the enclosing cell (X, Y, W, H) of
--- the element (which was given by calling the `place` method) by adding (Xo, Yo) to (X, Y) and
+-- * `fill` : a table of the form `{ x = boolean, y = boolean }`. Tells
+-- whether the block should
+-- occupy free space (along the corresponding axis) if placed inside a Layout.
+-- See `Layout:new`.
+-- * `offset` : a rectangle **(Xo, Yo, Wo, Ho)**. Modifies the enclosing cell
+-- (X, Y, W, H) of
+-- the element (which was given by calling the `place` method) by adding (Xo,
+-- Yo) to (X, Y) and
 -- overriding (W, H) by (Wo, Ho).
--- In other words, placing the element with the `offset` field (Xo, Yo, Wo, Ho) inside
+-- In other words, placing the element with the `offset` field (Xo, Yo, Wo,
+-- Ho) inside
 -- the cell (X, Y, W, H) is the same as placing this element inside the
 -- cell (X + Xo, Y + Yo, Wo, Ho). See Fig. 1.
 -- Usually used together with the `on` element (see below).
@@ -235,9 +315,11 @@ local Block = Class:subclass('Block')
 --          }
 --        }
 --
---        element:place(10, 10, 300, 300) -- actually placed in (20, 30, 200, 200)
+--        element:place(10, 10, 300, 300) -- actually placed in (20, 30, 200,
+--        200)
 --
--- * `on` : a block. Special property which value must be a block. Let us explain the meaning of
+-- * `on` : a block. Special property which value must be a block. Let us
+-- explain the meaning of
 -- the `on` property looking at the following example:
 --
 --        local UI = ui.Rectangle {
@@ -290,9 +372,12 @@ local Block = Class:subclass('Block')
 --          │                                                    │
 --          │                                                    │
 --          ╰───────────────────────────W (screen)───────────────╯
--- as you can see now the enclosing cell of **B** is **A** itself, namely, (A.x, A.y, A.w, A.h).
--- In other words **B** is automatically placed _inside_ **A**. This property together with the
--- `offset` one makes it possible to integrate elements (usually `Label`) into images. F.e.,
+-- as you can see now the enclosing cell of **B** is **A** itself, namely,
+-- (A.x, A.y, A.w, A.h).
+-- In other words **B** is automatically placed _inside_ **A**. This property
+-- together with the
+-- `offset` one makes it possible to integrate elements (usually `Label`) into
+-- images. F.e.,
 -- suppose you drew a health bar image:
 --
 --        ╭─────────────────╮
@@ -300,8 +385,10 @@ local Block = Class:subclass('Block')
 --        ││ area for text ││
 --        │■───────────────■│
 --        ╰─────────────────╯
--- and you want the text showing the health is always centered inside this image wherever
--- the bar is placed. All you need is to place a `Label` inside this image with the right offset:
+-- and you want the text showing the health is always centered inside this
+-- image wherever
+-- the bar is placed. All you need is to place a `Label` inside this image
+-- with the right offset:
 --
 --        local hp = ui.Image {
 --          path = 'path/to/image.png',
@@ -315,7 +402,70 @@ local Block = Class:subclass('Block')
 --            }
 --          }
 --        }
--- Now wherever `hp` is placed the text inside it is placed correctly automatically.
+-- Now wherever `hp` is placed the text inside it is placed correctly
+-- automatically.
+--
+-- * `mouse` : a table or boolean. Used to make a block react to mouse events
+-- (can be used to
+-- make buttons).
+-- A boolean used by some basic blocks in this library.
+-- In most cases this is a table containing mouse callbacks. There are 4 mouse
+-- callbacks available:
+--    * `onExit` : called each time the mouse (cursor) leaves the block
+--    * `onEnter` : called each time the mouse enters the block
+--    * `onPress` : called each time the mouse is pressed inside the block
+--    * `onClicked` : called each time the mouse is pressed __and__ released
+--    inside the block
+--
+-- The mouse actually is an FSM
+-- ([wiki](https://en.wikipedia.org/wiki/Finite-state_machine))
+-- which diagram you can see below:
+--
+--    Fig.4 Mouse FSM
+--
+--                   outside/onExit
+--    *     ┌───────────────────────────────┐                      ┌─────┐
+--    │     │                               │                 ┌────▶State├───┐
+--    │     │                               │                 │    └─────┘   │
+--    │ ┌───▼─────┐    inside/onEnter    ┌──┴──────┐          │              │
+--    │ │  Idle   │──────────────────────▶  Hover  │          │ event/action │
+--    └─▶(initial)│                      │         │          └──────────────┘
+--      └─▲───────┘                      └───┬───▲─┘
+--        │              press/onPressed     │   │
+--        │                    ┌─────────────┘   │
+--        │                    │                 │
+--        │                    │                 │
+--        │                  ┌─▼─────────┐       │release/onClick
+--        │  outside/onExit  │  Pressed  │       │
+--        └──────────────────│           ├───────┘
+--                           └───────────┘
+--
+-- So there are 4 events managing the mouse FSM:
+--
+-- * `press`
+-- * `inside`
+-- * `outside`
+-- * `release`
+--
+-- Each mouse callback accepts up to 1 (one) argument: if passed it is
+-- supposed to be the block itself (`self`).
+-- This is how it can be used:
+--    ui.Rectangle {
+--        w = 200,
+--        h = 200,
+--        color = { 1, 0, 0 },
+--        mouse = {
+--            onExit  = function () print('Bye, cursor !') end,
+--            onEnter = function () print('Hello, cursor !') end,
+--            onPress = function (self) self.color = { 0, 0, 1 } end,
+--            onClick = function (self) self.color = { 0, 1, 0 } end,
+--        }
+--    }
+-- Note how in the example above the `onExit` and `onEnter` callbacks
+-- don't have parameters. But each
+-- time the mouse is pressed or clicked inside the rectangle `onPress` and
+-- `onClick`
+-- are used to change the `color` property of the rectangle.
 function Block:new()
     self.visible = self.visible or true
     self.pad     = self.pad     or 0
@@ -330,11 +480,13 @@ function Block:new()
 end
 
 --- Returns the size of the block.
--- The size of the block is the minimum rectangle which the block can be placed in,
+-- The size of the block is the minimum rectangle which the block can be
+-- placed in,
 -- in the form of a table `{ x = width, y = height }`.
 -- @param includePad If `true` then the pads of the block are included
 -- (**AxB** in Fig. 1).
--- If `nil` (default) or `false` the pads are not included (**axb** in the figure above)
+-- If `nil` (default) or `false` the pads are not included (**axb** in the
+-- figure above)
 -- @return A table of the form `{ x = width, y = height }`
 function Block:size(includePad)
     if not self._size then
@@ -363,7 +515,8 @@ end
 -- @return The enclosing cell rectangle i.e. a table of the form
 -- `{ x = cell.x, y = cell.y, w = cell.w, h = cell.h }`, or `nil`.
 -- _NOTE:_ the enclosing cell is initialized
--- only after the block was placed by calling its `place` method. Otherwise it stays `nil`.
+-- only after the block was placed by calling its `place` method. Otherwise it
+-- stays `nil`.
 -- @usage
 -- local r = ui.Rectangle {
 --   w = 100,
@@ -428,7 +581,8 @@ function Block:place(x, y, w, h)
 end
 
 --- Draws the block.
--- Used to draw the block. Usually you don't want to call it on every block in your GUI - only
+-- Used to draw the block. Usually you don't want to call it on every block in
+-- your GUI - only
 -- once for each root element.
 function Block:draw()
     if not self.visible then
@@ -491,6 +645,39 @@ function Block:traverse()
     end, { self }
 end
 
+--- Mouse movement handler.
+-- . Parameters are the same as in
+-- [love.mousemoved](https://www.love2d.org/wiki/love.mousemoved)
+function Block:mousemoved(x, y, dx, dy, istouch)
+    if not self.mouse then
+        return
+    end
+
+    self:doMousemoved(x, y, dx, dy, istouch)
+end
+
+--- Mouse press handler.
+-- Mouse press handler. Parameters are the same as in
+-- [love.mousepressed](https://www.love2d.org/wiki/love.mousepressed)
+function Block:mousepressed(x, y, button, istouch, presses)
+    if not self.mouse then
+        return
+    end
+
+    self:doMousepressed(x, y, button, istouch, presses)
+end
+
+--- Mouse release handler.
+-- Mouse release handler. Parameters are the same as in
+-- [love.mousereleased](https://www.love2d.org/wiki/love.mousereleased)
+function Block:mousereleased(x, y, button, istouch, presses)
+    if not self.mouse then
+        return
+    end
+
+    self:doMousereleased(x, y, button, istouch, presses)
+end
+
 --- User defined blocks.
 -- ⚠️ This section is not complete and to be done. ⚠️
 -- @section override.
@@ -511,8 +698,8 @@ function Block:doPlace(x, y, w, h)
     local s = self:size()
 
     -- Initial position at the center of the enclosing cell
-    self.x = round(x + (w - s.x) / 2)
-    self.y = round(y + (h - s.y) / 2)
+    self.x = utils.round(x + (w - s.x) / 2)
+    self.y = utils.round(y + (h - s.y) / 2)
 
     local move = {
         ['left']   = function()
@@ -535,6 +722,65 @@ function Block:doPlace(x, y, w, h)
     for direction in self.align:gsub('%s+', ''):gmatch('([^+]+)') do
         if move[direction] then move[direction]() end
     end
+end
+
+function Block:mouseFSM ()
+    if not self.mouse.fsm then
+        self.mouse.fsm = initMouseFSM(self)
+    end
+
+    return self.mouse.fsm
+end
+
+--- Mouse moved.
+-- A block can override this function.
+--
+-- ⚠️ Care must be taken when overriding this function. As stated in
+-- `Block:new` this function manages the internal mouse FSM - if
+-- overridden incorrectly it can cause inconsistent behaviour. If you need
+-- to override this function you probably want to `doMousepressed` and
+-- `doMousereleased` also.
+--
+-- See `Block:mousemoved` for parameter description.
+function Block:doMousemoved (x, y, _, _, _)
+    local s   = self:size()
+    local fsm = self:mouseFSM()
+
+    if utils.inside(x, y, self.x, self.y, s.x, s.y) then
+        fsm:process('inside')
+    else
+        fsm:process('outside')
+    end
+end
+
+--- Mouse pressed.
+-- A block can override this function.
+--
+-- ⚠️ Care must be taken when overriding this function. As stated in
+-- `Block:new` this function manages the internal mouse FSM - if
+-- overridden incorrectly it can cause inconsistent behaviour. If you need
+-- to override this function you probably want to `doMousemoved` and
+-- `doMousereleased` also.
+--
+-- See `Block:mousepressed` for parameter description.
+function Block:doMousepressed (_, _, _, _, _)
+    local fsm = self:mouseFSM()
+    fsm:process('press')
+end
+
+--- Mouse released.
+-- A block can override this function.
+--
+-- ⚠️ Care must be taken when overriding this function. As stated in
+-- `Block:new` this function manages the internal mouse FSM - if
+-- overridden incorrectly it can cause inconsistent behaviour. If you need
+-- to override this function you probably want to `doMousemoved` and
+-- `doMousepressed` also.
+--
+-- See `Block:mousereleased` for parameter description.
+function Block:doMousereleased (_, _, _, _, _)
+    local fsm = self:mouseFSM()
+    fsm:process('release')
 end
 
 return Block

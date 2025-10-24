@@ -1,7 +1,9 @@
 --- Used to place blocks in a grid.
 --
--- Places child blocks in a grid `rows` by `columns`. _NOTE:_ strictly speaking it places the
--- enclosing cells of its child elements in a grid - the blocks themselves may stay "unaligned"
+-- Places child blocks in a grid `rows` by `columns`. _NOTE:_ strictly
+-- speaking it places the
+-- enclosing cells of its child elements in a grid - the blocks themselves may
+-- stay "unaligned"
 -- because of different size and/or values of the `align` property (see Fig. 1).
 --    Fig. 1
 --
@@ -169,14 +171,19 @@ end
 local Layout = Block:subclass('Layout')
 
 --- Constructor.
--- These are properties (in addition to the list in `Block:new`) relevant for this type of block:
+-- These are properties (in addition to the list in `Block:new`) relevant for
+-- this type of block:
 --
--- * `rows` : a positive integer. The number of rows in the layout. Default is 1.
--- * `columns` : a positive integer. The number of columns in the layout. Default is 1.
--- * `spacing` :  a non-negative integer. The minimum distance between columns/rows _and_ between
+-- * `rows` : a positive integer. The number of rows in the layout. Default is
+-- 1.
+-- * `columns` : a positive integer. The number of columns in the layout.
+-- Default is 1.
+-- * `spacing` :  a non-negative integer. The minimum distance between
+-- columns/rows _and_ between
 -- the children's enclosing cells and the layout's one. Default is 10.
 -- * `align` : ignored.
--- * `fill` : for a child element it means the element's enclosing cell fills empty space of the
+-- * `fill` : for a child element it means the element's enclosing cell fills
+-- empty space of the
 -- layout's enclosing cell if any:
 --        local layout = {
 --          columns = 1,
@@ -214,10 +221,14 @@ local Layout = Block:subclass('Layout')
 --          ││           ││                     ││
 --          │╰───────────╯╰─────────────────────╯│
 --          ╰─────────────────W──────────────────╯
--- _NOTE:_ as `Layout` places the enclosing cells of its child elements in a grid, if there is at
--- least one element in a row (column) that has `fill.y` (`fill.x`) equal to `true` then virtually
--- all elements in that row (column) fills the `y` (`x`) axis also. For example, in Fig. 2 you
--- can see that the **B**'s enclosing cell fills the y-axis despite the fact it
+-- _NOTE:_ as `Layout` places the enclosing cells of its child elements in a
+-- grid, if there is at
+-- least one element in a row (column) that has `fill.y` (`fill.x`) equal to
+-- `true` then virtually
+-- all elements in that row (column) fills the `y` (`x`) axis also. For
+-- example, in Fig. 2 you
+-- can see that the **B**'s enclosing cell fills the y-axis despite the fact
+-- it
 -- has `fill.y == false`. This is because **A** has `fill.y == true`.
 --
 -- See the `fill.lua` example to give it a taste.
@@ -225,6 +236,7 @@ function Layout:new()
     self.rows       = self.rows     or 1
     self.columns    = self.columns  or 1
     self.spacing    = self.spacing  or 10
+    self.mouse      = self.mouse    or true
 end
 
 function Layout:doPlace(x, y, w, h)
@@ -308,6 +320,48 @@ end
 function Layout:doDraw()
     for _, child in ipairs(self) do
         child:draw()
+    end
+end
+
+--- Mouse events.
+-- @section mouse
+
+--- Mouse moved.
+-- Propagates this event to all of its direct children with all of the
+-- arguments it is called.
+function Layout:doMousemoved (x, y, dx, dy, istouch)
+    if #self == 0 then
+        return
+    end
+
+    for _, child in ipairs(self) do
+        child:mousemoved (x, y, dx, dy, istouch)
+    end
+end
+
+--- Mouse pressed.
+-- Propagates this event to all of its direct children with all of the
+-- arguments it is called.
+function Layout:doMousepressed (x, y, button, istouch, presses)
+    if #self == 0 then
+        return
+    end
+
+    for _, child in ipairs(self) do
+        child:mousepressed (x, y, button, istouch, presses)
+    end
+end
+
+--- Mouse released.
+-- Propagates this event to all of its direct children with all of the
+-- arguments it is called.
+function Layout:doMousereleased (x, y, button, istouch, presses)
+    if #self == 0 then
+        return
+    end
+
+    for _, child in ipairs(self) do
+        child:mousereleased (x, y, button, istouch, presses)
     end
 end
 

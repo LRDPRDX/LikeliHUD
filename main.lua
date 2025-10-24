@@ -60,6 +60,18 @@ function love.keyreleased(key)
     if keys.released[key] then keys.released[key]() end
 end
 
+function love.mousemoved(x, y, dx, dy, istouch)
+    HUD:mousemoved(x, y, dx, dy, istouch)
+end
+
+function love.mousepressed(x, y, button, istouch, presses)
+    HUD:mousepressed(x, y, button, istouch, presses)
+end
+
+function love.mousereleased(x, y, button, istouch, presses)
+    HUD:mousereleased(x, y, button, istouch, presses)
+end
+
 function love.draw()
     HUD:draw()
 end

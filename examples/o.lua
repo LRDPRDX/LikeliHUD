@@ -4,21 +4,29 @@ local buttons = ui.Layout {
     rows    = 2,
     columns = 1,
 
-    ui.Image {
+    ui.ImageButton {
         path = 'images/love-button.png',
         quad = {
             layout = {
                 rows    = 1,
-                columns = 2,
+                columns = 3,
             }
         },
 
-        signals = { ['button.pressed'] = function (self) self.quad.current = 2 end,
-                    ['button.released'] = function (self) self.quad.current = 1 end },
+        onClick = function () print('Clicked...') end,
+
+        signals = {
+            ['button.pressed'] = function (self)
+                self.quad.current = 2
+            end,
+            ['button.released'] = function (self)
+                self.quad.current = 1
+            end
+        },
     },
 
     ui.Label {
-        text = 'Press Space'
+        text = 'Press Space or click the button with the mouse'
     }
 }
 

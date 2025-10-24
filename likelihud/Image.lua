@@ -74,14 +74,18 @@ function Image:new()
     self.quad.current = self.quad.current   or 1
     self.quad.quads   = {}
 
-    local quadW = math.floor(self.image:getWidth()  / self.quad.layout.columns)
-    local quadH = math.floor(self.image:getHeight() / self.quad.layout.rows)
+    local imageW, imageH = self.image:getWidth(), self.image:getHeight()
+
+    local quadW = math.floor(imageW / self.quad.layout.columns)
+    local quadH = math.floor(imageH / self.quad.layout.rows)
     local yQuad = 0
     for r = 1, self.quad.layout.rows do
         local xQuad = 0
         for c = 1, self.quad.layout.columns do
             table.insert(self.quad.quads,
-                         love.graphics.newQuad(xQuad, yQuad, quadW, quadH, self.image))
+                         love.graphics.newQuad(xQuad, yQuad,
+                                               quadW, quadH,
+                                               self.image))
             xQuad = xQuad + quadW
         end
         yQuad = yQuad + quadH
@@ -95,7 +99,9 @@ function Image:doSize()
 end
 
 function Image:doDraw()
-    love.graphics.draw(self.image, self.quad.quads[self.quad.current], self.x, self.y)
+    love.graphics.draw(self.image,
+                       self.quad.quads[self.quad.current],
+                       self.x, self.y)
 end
 
 return Image
