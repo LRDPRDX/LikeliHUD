@@ -3,7 +3,13 @@
 [![Docs](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml/badge.svg)](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml)
 [![pages-build-deployment](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment)
 
-:warning: It's raw, not tested, not polished. There are gaps to be filled :warning:
+## Disclaimer
+
+_This is not intended to be a universal GUI library - the direction under
+this library is being developed mostly follows
+the requirements I have while developing my game. As a result this library
+might not fit your particular needs. More over, it might be changed
+drastically from version to version._
 
 ## Give it a taste
 
@@ -44,14 +50,16 @@ end
 ## Feature list
 
 - Basic elements are :
+    - `ImageButton`
+    - `Rectangle`
     - `Layout`
     - `Stack`
     - `Image`
     - `Label`
-    - `Rectangle`
 - Declarative approach. Similar to QML.
 - Grid layout. Nested layouts are possible.
-- Auto alignment. Alignment hints : `center`, `top`, `bottom`, `left` or a combination.
+- Auto alignment. Alignment hints : `center`, `top`, `bottom`, `left` or a
+  combination.
 - Each element inside a layout can be set to fill `width`, `height`, both or
   none.
 - Communication with the external logic through the signals "attached" to the

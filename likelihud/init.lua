@@ -7,4 +7,8 @@ return {
     Layout    = require(UI .. 'Layout'),
     Rectangle = require(UI .. 'Rectangle'),
     Stack     = require(UI .. 'Stack'),
+
+    ImageButton = require(UI .. 'ImageButton'),
+
+    utils     = require(UI .. 'utils')
 }

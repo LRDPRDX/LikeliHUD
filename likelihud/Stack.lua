@@ -1,7 +1,9 @@
 --- Used to place one block over another.
 --
--- Places child blocks one "over" another. You already know how to place one block over another
--- using the `on` property. This block just puts every child element inside its enclosing cell
+-- Places child blocks one "over" another. You already know how to place one
+-- block over another
+-- using the `on` property. This block just puts every child element inside
+-- its enclosing cell
 -- one by one, one over another. For example, provided you have this image:
 --
 --    Fig. 1
@@ -47,7 +49,9 @@ local Stack = Block:subclass('Stack')
 -- There are no special properties for this type of a block. However,
 --
 -- * `align` : ignored.
+-- * `mouse` : mouse events are passed to the **top most** element only.
 function Stack:new()
+    self.mouse = self.mouse or true
 end
 
 function Stack:doPlace(x, y, w, h)
@@ -72,6 +76,33 @@ function Stack:doDraw()
     for _, child in ipairs(self) do
         child:draw()
     end
+end
+
+function Stack:doMousemoved (x, y, button, istouch, presses)
+    if #self == 0 then
+        return
+    end
+
+    local top = self[#self]
+    top:mousemoved(x, y, button, istouch, presses)
+end
+
+function Stack:doMousepressed (x, y, button, istouch, presses)
+    if #self == 0 then
+        return
+    end
+
+    local top = self[#self]
+    top:mousepressed(x, y, button, istouch, presses)
+end
+
+function Stack:doMousereleased (x, y, button, istouch, presses)
+    if #self == 0 then
+        return
+    end
+
+    local top = self[#self]
+    top:mousereleased(x, y, button, istouch, presses)
 end
 
 return Stack
