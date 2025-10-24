@@ -17,6 +17,7 @@ local oeUI      = require('examples.o')
 local squaresUI = require('examples.squares')
 local fillUI    = require('examples.fill')
 local startUI   = require('examples.start')
+local buttonsUI = require('examples.buttons')
 local HUD       = nil
 
 local function updateHUD(newHUD)
@@ -36,6 +37,7 @@ local keys = {
         ['3'] = function() updateHUD(oeUI) end,
         ['4'] = function() updateHUD(squaresUI) end,
         ['5'] = function() updateHUD(fillUI) end,
+        ['6'] = function() updateHUD(buttonsUI) end,
         ['q'] = function() love.event.quit() end,
     },
     released = {
