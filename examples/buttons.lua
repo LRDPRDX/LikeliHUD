@@ -1,6 +1,8 @@
 local ui = require('likelihud')
 local Signal = require('hump.signal')
 
+-- See the main.lua to see how the signals emitted below are handled.
+
 local buttons = ui.Layout {
     rows = 3,
     columns = 1,
@@ -27,7 +29,7 @@ local buttons = ui.Layout {
                 Signal.emit('last.clicked', 'Start')
             end,
 
-            on = {
+            inside = {
                 ui.Label {
                     text = 'Start'
                 }
@@ -48,7 +50,7 @@ local buttons = ui.Layout {
                 Signal.emit('last.clicked', 'Load')
             end,
 
-            on = {
+            inside = {
                 ui.Label {
                     text = 'Load'
                 }
@@ -69,7 +71,7 @@ local buttons = ui.Layout {
                 Signal.emit('last.clicked', 'Quit')
             end,
 
-            on = {
+            inside = {
                 ui.Label {
                     text = 'Quit'
                 }
@@ -87,9 +89,9 @@ local buttons = ui.Layout {
             ui.Label {
                 align = 'left',
                 text = 'Nothing',
-                signals = {
-                    ['last.clicked'] = function (self, message)
-                        self.text = message
+                on = {
+                    ['last.clicked'] = function (self, event)
+                        self.text = event.message
                     end
                 },
             }

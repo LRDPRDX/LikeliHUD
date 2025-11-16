@@ -31,7 +31,7 @@ local ImageButton = Image:subclass('ImageButton')
 -- a custom mouse
 -- better to create it from scratch as a user-defined block.
 --
--- _NOTE_ : this is not a text button - use the `on` (see `Block:new`)
+-- _NOTE_ : this is not a text button - use the `inside` (see `Block:new`)
 -- property to place a `Label` inside a button.
 --
 -- @usage
@@ -47,7 +47,7 @@ local ImageButton = Image:subclass('ImageButton')
 --     },
 --
 --     -- Make the button display text
---     on = {
+--     inside = {
 --         ui.Label {
 --             text = 'Ok'
 --         }

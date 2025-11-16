@@ -62,8 +62,8 @@ end
   combination.
 - Each element inside a layout can be set to fill `width`, `height`, both or
   none.
-- Communication with the external logic through the signals "attached" to the
-  elements
+- Communication with the external logic through the events which elements
+are subscribed to
 
 ## Dependencies
 
@@ -86,7 +86,7 @@ love path/to/likelihud
 
 and press `1`, `2`, `3` to switch between examples. See the code [here](/examples).
 
-### Layout
+### Demo
 
 This is a demo (code [here](/main.lua)):
 

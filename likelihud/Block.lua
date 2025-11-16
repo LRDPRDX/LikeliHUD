@@ -55,7 +55,7 @@
 -- Lua table)
 -- i.e. key-value pairs; _children_ elements is the array part of the block.
 -- However, see the
--- `on` property in the description of the `new` method. A simple example of
+-- `inside` property in the description of the `new` method. A simple example of
 -- an object tree which has the following diagram (properties and their values
 -- are written in the
 -- parentheses)
@@ -300,7 +300,7 @@ local Block = Class:subclass('Block')
 -- Ho) inside
 -- the cell (X, Y, W, H) is the same as placing this element inside the
 -- cell (X + Xo, Y + Yo, Wo, Ho). See Fig. 1.
--- Usually used together with the `on` element (see below).
+-- Usually used together with the `inside` element (see below).
 --
 --        -- Rectangle is a Block
 --        local element = ui.Rectangle {
@@ -318,9 +318,9 @@ local Block = Class:subclass('Block')
 --        element:place(10, 10, 300, 300) -- actually placed in (20, 30, 200,
 --        200)
 --
--- * `on` : a block. Special property which value must be a block. Let us
+-- * `inside` : a block. Special property which value must be a block. Let us
 -- explain the meaning of
--- the `on` property looking at the following example:
+-- the `inside` property looking at the following example:
 --
 --        local UI = ui.Rectangle {
 --          id = 'A'
@@ -328,7 +328,7 @@ local Block = Class:subclass('Block')
 --          w = 100,
 --          h = 50,
 --
---          on = {
+--          inside = {
 --            ui.Rectangle { -- the enclosing cell of this element is A itself
 --              id = 'B',
 --
@@ -393,7 +393,7 @@ local Block = Class:subclass('Block')
 --        local hp = ui.Image {
 --          path = 'path/to/image.png',
 --
---          on = {
+--          inside = {
 --            ui.Label {
 --              text = '100',
 --              offset = {
@@ -404,6 +404,9 @@ local Block = Class:subclass('Block')
 --        }
 -- Now wherever `hp` is placed the text inside it is placed correctly
 -- automatically.
+--
+-- * `filter` : a function. It is supposed to filter the events if pushed
+-- to the element. See the <a href="#Events">Events</a> section for details.
 --
 -- * `mouse` : a table or boolean. Used to make a block react to mouse events
 -- (can be used to
@@ -471,12 +474,6 @@ function Block:new()
     self.pad     = self.pad     or 0
     self.align   = self.align   or 'center'
     self.fill    = self.fill    or { x = true, y = true }
-
-    if self.signals then
-        for k, f in pairs(self.signals) do
-            Signal.register(k, function(...) f(self, ...) end)
-        end
-    end
 end
 
 --- Returns the size of the block.
@@ -570,12 +567,12 @@ function Block:place(x, y, w, h)
 
     self:doPlace(x, y, w, h)
 
-    if not self.on then
+    if not self.inside then
         return
     end
 
     -- Place blocks that use this block as a coordinate reference
-    for _, item in ipairs(self.on) do
+    for _, item in ipairs(self.inside) do
         item:place(self.x, self.y, s.x, s.y)
     end
 end
@@ -600,8 +597,8 @@ function Block:draw()
 
         self:doDraw()
 
-        if self.on then
-            for _, item in ipairs(self.on) do
+        if self.inside then
+            for _, item in ipairs(self.inside) do
                 item:draw()
             end
         end
@@ -636,8 +633,8 @@ function Block:traverse()
             table.insert(stack, child)
         end
 
-        if block.on then
-            for _, child in ipairs(block.on) do
+        if block.inside then
+            for _, child in ipairs(block.inside) do
                 table.insert(stack, child)
             end
         end
@@ -677,6 +674,98 @@ function Block:mousereleased(x, y, button, istouch, presses)
 
     self:doMousereleased(x, y, button, istouch, presses)
 end
+
+--- Events.
+-- Communication with the external world is defined through the use of
+-- `Event`s. An `Event` is any table with the mandatory `id` key and optional
+-- data. For example, this table can be an `Event`:
+--
+--    local event = {
+--      id = 'button.pressed',
+--      key = 'space',
+--    }
+--
+-- The block which is supposed to react on events must have the
+-- corresponding `on` property of the following structure:
+--
+--    local l = ui.Label {
+--      text = 'hello',
+--      on = {
+--        ['text.changed'] = function (self, event)
+--          self.text = event.message
+--        end
+--      }
+--    }
+--
+-- i.e. it is a table where keys are events' IDs and values are
+-- callbacks to those events.
+-- A callback accepts two arguments: the block itself (`self`), and the event.
+--
+-- To send an event to a block you call the `push` method on the block with
+-- the event as the only argument:
+--
+--    l:push { id = 'text.changed', message = 'world' }
+--
+--  This call will propagate the event to
+--  the label and call the corresponding function with 2 arguments:
+--  `self` is the label object, and the `event` itself.
+--
+--  _NOTE_: this means you cannot easily push an event to a non-root
+--  block. Also it means that triggering an event propagation
+--  from one block to another is not straightforward: you probably want to
+--  emit a signal from one block which in turn will push the corresponding
+--  event to the root element. See the `buttons.lua` for an example.
+--
+-- See the `events.lua` file for an example.
+-- @section signals
+
+--- Pushes an event to the block and to all of its child down the tree.
+-- @param event A table. _NOTE_: it MUST have the `id` key which is often just
+-- a string.
+--
+function Block:push (event)
+    local callback = self.on and self.on[event.id]
+    if callback then callback (self, event) end
+
+    local isAllowed, newEvent = self:filter(event)
+    if not isAllowed then -- break propagation
+        return
+    end
+
+    if newEvent then
+        event = newEvent
+    end
+
+    for _, child in ipairs(self) do
+        child:push (event)
+    end
+
+    if self.inside then
+        for _, child in ipairs(self.inside) do
+            child:push (event)
+        end
+    end
+end
+
+--- It says whether the event should propagate further down the tree or not.
+-- And also can be used to modify the event: so the children blocks will get
+-- a modified event.
+-- @param event Event to be passed. _NOTE_: DON'T modify this event
+-- inside this function (if overriden). If you want to modify the event
+-- create a new one inside this function and return it
+-- (see the 2nd return value).
+-- @return A boolean.
+-- `true` means that `event` propagates down the tree (i.e. to the children).
+-- `false` means the event is filtered out and the propagation breaks.
+-- @return [optional] A table. If returned it MUST be a new event table.
+-- This new event will replace the original one (but only
+-- for the subtree starting from `self`).
+-- _NOTE_: you can either pass this function as a property in the constructor
+-- or override the method. See `events.lua` for an example.
+function Block:filter (event)
+    return true
+end
+
 
 --- User defined blocks.
 -- ⚠️ This section is not complete and to be done. ⚠️

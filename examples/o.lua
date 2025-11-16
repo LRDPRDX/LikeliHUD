@@ -15,9 +15,9 @@ local buttons = ui.Layout {
 
         onClick = function () print('Clicked...') end,
 
-        signals = {
+        on = {
             ['button.pressed'] = function (self)
-                self.quad.current = 2
+                self.quad.current = 3
             end,
             ['button.released'] = function (self)
                 self.quad.current = 1

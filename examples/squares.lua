@@ -6,7 +6,7 @@ local squares = ui.Rectangle {
 
     color = { 1, 0, 0 },
 
-    on = {
+    inside = {
         ui.Rectangle {
             w = 50,
             h = 50,
@@ -34,7 +34,7 @@ local squares = ui.Rectangle {
                 height = 200,
             },
 
-            on = {
+            inside = {
                 ui.Rectangle {
                     w = 130,
                     h = 130,
@@ -48,7 +48,7 @@ local squares = ui.Rectangle {
                         height = 150,
                     },
 
-                    on = {
+                    inside = {
                         ui.Rectangle {
                             w = 50,
                             h = 50,

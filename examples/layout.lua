@@ -166,7 +166,7 @@ local layout = ui.Layout {
         ui.Image {
             path   = 'images/offset.png',
 
-            on = {
+            inside = {
                 ui.Label {
                     text = '1',
                     offset = {
