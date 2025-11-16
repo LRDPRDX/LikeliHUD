@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>likeliHUD</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>likeliHUD</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Class_Layout">Class Layout </a></li>
+<li><a href="#Mouse_events">Mouse events </a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Block.html">Block</a></li>
+  <li><strong>Layout</strong></li>
+  <li><a href="../classes/Rectangle.html">Rectangle</a></li>
+  <li><a href="../classes/Image.html">Image</a></li>
+  <li><a href="../classes/Stack.html">Stack</a></li>
+  <li><a href="../classes/Label.html">Label</a></li>
+  <li><a href="../classes/ImageButton.html">ImageButton</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Utils.html">Utils</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/README.md.html">README</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/buttons.lua.html">buttons.lua</a></li>
+  <li><a href="../examples/events.lua.html">events.lua</a></li>
+  <li><a href="../examples/fill.lua.html">fill.lua</a></li>
+  <li><a href="../examples/layout.lua.html">layout.lua</a></li>
+  <li><a href="../examples/o.lua.html">o.lua</a></li>
+  <li><a href="../examples/simple.lua.html">simple.lua</a></li>
+  <li><a href="../examples/squares.lua.html">squares.lua</a></li>
+  <li><a href="../examples/start.lua.html">start.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>Layout</code></h1>
+<p>Used to place blocks in a grid.</p>
+<p>
+
+
+<p> Places child blocks in a grid <code>rows</code> by <code>columns</code>. <em>NOTE:</em> strictly
+ speaking it places the
+ enclosing cells of its child elements in a grid - the blocks themselves may
+ stay "unaligned"
+ because of different size and/or values of the <code>align</code> property (see Fig. 1).</p>
+
+<pre>
+Fig. <span class="number">1</span>
+
+  ■───▶︎ columns: <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, ...
+  │
+  ▼
+rows: <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, ...
+
+                  Enclosing cell of a block
+                            ┆
+                            ┆
+                            ┆
+                            ┆
+■───────────────────────────┆───────────────────╮
+│          ▲                ┆                   │
+│          S                ┆                   │
+│          ▼                ▼                   │
+│       ■───────────╮       ■───────────╮       │
+│       │           │       │           │       │
+│◀︎  S  ▶︎│  ╭─────╮  │◀︎  S  ▶︎│           │◀︎  S  ▶︎│
+│       │  │A    b  │       │    ╭─────╮│       │
+│       │  ╰──a──╯  │       │    │B    ││       │
+│       │           │       │    ╰─────╯│       │
+│       ╰───────────╯       ╰───────────╯       │
+│          ▲                                    │
+│          S                                    │
+│          ▼                                    │
+│       ■───────────╮       ■───────────╮       │
+│       │           │       │╭─────╮    │       │
+│       │           │       ││C    │    │       │
+│       │╭─────╮    │       │╰─────╯    │       │
+│       ││D    │    │       │           │       │
+│       │╰─────╯    │       │           │       │
+│       ╰───────────╯       ╰───────────╯       │
+│          ▲                                    │
+│          S                                    │
+│          ▼                                    │
+╰───────────────────────────────────────────────╯
+</pre>
+
+<p> The code which produces the UI shown in Fig. 1 is the following:</p>
+
+
+<pre>
+<span class="keyword">local</span> layout = ui.<span class="function-name">Layout</span> {
+  rows    = <span class="number">2</span>,
+  columns = <span class="number">2</span>,
+  spacing = S,
+
+  ui.<span class="function-name">Rectangle</span> {
+    id = <span class="string">'A'</span>,
+
+    w = a,
+    h = b,
+
+    align = <span class="string">'center'</span>,
+  },
+
+  ui.<span class="function-name">Rectangle</span> {
+    id = <span class="string">'B'</span>,
+
+    w = a,
+    h = b,
+
+    align = <span class="string">'bottom + right'</span>,
+  },
+
+  ui.<span class="function-name">Rectangle</span> {
+    id = <span class="string">'C'</span>,
+
+    w = a,
+    h = b,
+
+    align = <span class="string">'bottom + left'</span>,
+  },
+
+  ui.<span class="function-name">Rectangle</span> {
+    id = <span class="string">'D'</span>,
+
+    w = a,
+    h = b,
+
+    align = <span class="string">'top + left'</span>,
+  },
+}
+</pre>
+
+</p>
+
+
+<h2><a href="#Class_Layout">Class Layout </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#layout:new">layout:new ()</a></td>
+	<td class="summary">Constructor.</td>
+	</tr>
+</table>
+<h2><a href="#Mouse_events">Mouse events </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#layout:doMousemoved">layout:doMousemoved (x, y, dx, dy, istouch)</a></td>
+	<td class="summary">Mouse moved.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#layout:doMousepressed">layout:doMousepressed (x, y, button, istouch, presses)</a></td>
+	<td class="summary">Mouse pressed.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#layout:doMousereleased">layout:doMousereleased (x, y, button, istouch, presses)</a></td>
+	<td class="summary">Mouse released.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header has-description"><a name="Class_Layout"></a>Class Layout </h2>
+
+          <div class="section-description">
+          Represents a layout.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "layout:new"></a>
+    <strong>layout:new ()</strong>
+    </dt>
+    <dd>
+    Constructor.
+ These are properties (in addition to the list in <a href="../classes/Block.html#block:new">Block:new</a>) relevant for
+ this type of block:</p>
+
+<ul>
+    <li><p><code>rows</code> : a positive integer. The number of rows in the layout. Default is
+    1.</p></li>
+    <li><p><code>columns</code> : a positive integer. The number of columns in the layout.
+    Default is 1.</p></li>
+    <li><p><code>spacing</code> :  a non-negative integer. The minimum distance between
+    columns/rows <em>and</em> between
+    the children's enclosing cells and the layout's one. Default is 10.</p></li>
+    <li><p><code>align</code> : ignored.</p></li>
+    <li><p><code>fill</code> : for a child element it means the element's enclosing cell fills
+empty space of the
+layout's enclosing cell if any:</p>
+<pre><code>local layout = {
+  columns = 1,
+
+  ui.Rectangle {
+    id = 'A',
+
+    w = a,
+    h = b,
+
+    fill = { x = false, y = true },
+  },
+
+  ui.Rectangle {
+    id = 'B',
+
+    w = a,
+    h = b,
+
+    fill = { x = true, y = false },
+  }
+}
+
+layout:place(X, Y, W, H)
+</code></pre>
+<p>which results in the following diagram</p>
+<pre><code>Fig. 2
+
+(X, Y)
+  ■────────────────────────────────────╮
+  │■───────────╮■─────────────────────╮│
+  ││           ││                     ││
+  ││  ╭─────╮  ││       ╭─────╮       ││
+  ││  │A    b  ││       │B    b       │H
+  ││  ╰──a──╯  ││       ╰──a──╯       ││
+  ││           ││                     ││
+  │╰───────────╯╰─────────────────────╯│
+  ╰─────────────────W──────────────────╯
+</code></pre>
+<p><em>NOTE:</em> as <a href="../classes/Layout.html#">Layout</a> places the enclosing cells of its child elements in a
+grid, if there is at
+least one element in a row (column) that has <code>fill.y</code> (<code>fill.x</code>) equal to
+<code>true</code> then virtually
+all elements in that row (column) fills the <code>y</code> (<code>x</code>) axis also. For
+example, in Fig. 2 you
+can see that the <strong>B</strong>'s enclosing cell fills the y-axis despite the fact
+it
+has <code>fill.y == false</code>. This is because <strong>A</strong> has <code>fill.y == true</code>.</p></li>
+</ul>
+
+<p> See the <a href="../examples/fill.lua.html#">fill.lua</a> example to give it a taste.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Mouse_events"></a>Mouse events </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "layout:doMousemoved"></a>
+    <strong>layout:doMousemoved (x, y, dx, dy, istouch)</strong>
+    </dt>
+    <dd>
+    Mouse moved.
+ Propagates this event to all of its direct children with all of the
+ arguments it is called.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">dx</span>
+
+
+
+        </li>
+        <li><span class="parameter">dy</span>
+
+
+
+        </li>
+        <li><span class="parameter">istouch</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "layout:doMousepressed"></a>
+    <strong>layout:doMousepressed (x, y, button, istouch, presses)</strong>
+    </dt>
+    <dd>
+    Mouse pressed.
+ Propagates this event to all of its direct children with all of the
+ arguments it is called.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">button</span>
+
+
+
+        </li>
+        <li><span class="parameter">istouch</span>
+
+
+
+        </li>
+        <li><span class="parameter">presses</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "layout:doMousereleased"></a>
+    <strong>layout:doMousereleased (x, y, button, istouch, presses)</strong>
+    </dt>
+    <dd>
+    Mouse released.
+ Propagates this event to all of its direct children with all of the
+ arguments it is called.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">button</span>
+
+
+
+        </li>
+        <li><span class="parameter">istouch</span>
+
+
+
+        </li>
+        <li><span class="parameter">presses</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2025-11-16 10:17:18 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

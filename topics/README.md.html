@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>likeliHUD</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>likeliHUD</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Disclaimer">Disclaimer </a></li>
+<li><a href="#Give_it_a_taste">Give it a taste </a></li>
+<li><a href="#Feature_list">Feature list </a></li>
+<li><a href="#Dependencies">Dependencies </a></li>
+<li><a href="#Installation">Installation </a></li>
+<li><a href="#Examples">Examples </a></li>
+<li><a href="#Acknowledgements_and_similar_projects">Acknowledgements and similar projects </a></li>
+</ul>
+
+
+<h2>Topics</h2>
+<ul class="">
+  <li><strong>README</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Utils.html">Utils</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Block.html">Block</a></li>
+  <li><a href="../classes/Layout.html">Layout</a></li>
+  <li><a href="../classes/Rectangle.html">Rectangle</a></li>
+  <li><a href="../classes/Image.html">Image</a></li>
+  <li><a href="../classes/Stack.html">Stack</a></li>
+  <li><a href="../classes/Label.html">Label</a></li>
+  <li><a href="../classes/ImageButton.html">ImageButton</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/buttons.lua.html">buttons.lua</a></li>
+  <li><a href="../examples/events.lua.html">events.lua</a></li>
+  <li><a href="../examples/fill.lua.html">fill.lua</a></li>
+  <li><a href="../examples/layout.lua.html">layout.lua</a></li>
+  <li><a href="../examples/o.lua.html">o.lua</a></li>
+  <li><a href="../examples/simple.lua.html">simple.lua</a></li>
+  <li><a href="../examples/squares.lua.html">squares.lua</a></li>
+  <li><a href="../examples/start.lua.html">start.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+
+<h1>A simple UI library written in Lua for the LÖVE2D framework</h1>
+
+<p><a href="https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml"><img src="https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml/badge.svg" alt="Docs"/></a>
+<a href="https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment"><img src="https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment/badge.svg" alt="pages-build-deployment"/></a></p>
+
+<p><a name="Disclaimer"></a></p>
+<h2>Disclaimer</h2>
+
+<p><em>This is not intended to be a universal GUI library - the direction under
+this library is being developed mostly follows
+the requirements I have while developing my game. As a result this library
+might not fit your particular needs. More over, it might be changed
+drastically from version to version.</em></p>
+
+<p><a name="Give_it_a_taste"></a></p>
+<h2>Give it a taste</h2>
+
+
+<pre>
+<span class="keyword">local</span> ui = <span class="global">require</span>(<span class="string">'likelihud'</span>)
+
+<span class="keyword">local</span> simple = ui.<span class="function-name">Layout</span> {
+    rows    = <span class="number">2</span>,
+    columns = <span class="number">2</span>,
+
+    ui.<span class="function-name">Label</span> { text = <span class="string">'Hello'</span>, },
+
+    ui.<span class="function-name">Label</span> { text = <span class="string">'I'</span>, },
+
+    ui.<span class="function-name">Label</span> { text = <span class="string">'am'</span>, },
+
+    ui.<span class="function-name">Layout</span> {
+        rows    = <span class="number">2</span>,
+        columns = <span class="number">2</span>,
+
+        ui.<span class="function-name">Label</span> { text = <span class="string">'Li'</span>, },
+
+        ui.<span class="function-name">Label</span> { text = <span class="string">'ke'</span>, },
+
+        ui.<span class="function-name">Label</span> { text = <span class="string">'li'</span>, },
+
+        ui.<span class="function-name">Label</span> { text = <span class="string">'HUD'</span>, },
+    }
+}
+
+<span class="keyword">for</span> block <span class="keyword">in</span> simple:<span class="function-name">traverse</span>() <span class="keyword">do</span>
+    block.border = <span class="keyword">true</span>
+<span class="keyword">end</span>
+</pre>
+
+
+<p><img src="images/simple.png" alt="simple"/></p>
+
+<p><a name="Feature_list"></a></p>
+<h2>Feature list</h2>
+
+<ul>
+    <li>Basic elements are :
+
+<pre>
+- <span class="backtick"><a href="../classes/ImageButton.html#">ImageButton</a></span>
+- <span class="backtick"><a href="../classes/Rectangle.html#">Rectangle</a></span>
+- <span class="backtick"><a href="../classes/Layout.html#">Layout</a></span>
+- <span class="backtick"><a href="../classes/Stack.html#">Stack</a></span>
+- <span class="backtick"><a href="../classes/Image.html#">Image</a></span>
+- <span class="backtick"><a href="../classes/Label.html#">Label</a></span>
+</pre>
+</li>
+    <li>Declarative approach. Similar to QML.</li>
+    <li>Grid layout. Nested layouts are possible.</li>
+    <li>Auto alignment. Alignment hints : <code>center</code>, <code>top</code>, <code>bottom</code>, <code>left</code> or a
+    combination.</li>
+    <li>Each element inside a layout can be set to fill <code>width</code>, <code>height</code>, both or
+    none.</li>
+    <li>Communication with the external logic through the events which elements
+    are subscribed to</li>
+</ul>
+
+<p><a name="Dependencies"></a></p>
+<h2>Dependencies</h2>
+
+<ul>
+    <li><a href="https://hump.readthedocs.io/en/latest/signal.html">hump</a> for signals</li>
+    <li><a href="https://github.com/LRDPRDX/lua-class">subclass</a> (used internally)</li>
+</ul>
+
+<p><a name="Installation"></a></p>
+<h2>Installation</h2>
+
+
+<pre>
+luarocks install likelihud
+</pre>
+
+
+<p><a name="Examples"></a></p>
+<h2>Examples</h2>
+
+<p>Run <code>main.lua</code> :</p>
+
+
+<pre>
+love path/to/likelihud
+</pre>
+
+
+<p>and press <code>1</code>, <code>2</code>, <code>3</code> to switch between examples. See the code <a href="/examples">here</a>.</p>
+
+<h3>Demo</h3>
+
+<p>This is a demo (code <a href="/main.lua">here</a>):</p>
+
+<p><img src="/gifs/demo.gif" alt="demo"/></p>
+
+<h3>Signals</h3>
+
+<p>This is the simplest game ever written with LÖVE2D (code <a href="/examples/o.lua">here</a>):</p>
+
+<p><img src="/gifs/o.gif" alt="signals example"/></p>
+
+<h3>Documentation</h3>
+
+<p>Documentation is available <a href="https://lrdprdx.github.io/LikeliHUD/">here</a>.</p>
+
+<p><a name="Acknowledgements_and_similar_projects"></a></p>
+<h2>Acknowledgements and similar projects</h2>
+
+<p>I had seen several ui libs before I decided to write my own. Though I didn't
+find the one which would have everything I needed I've learned a lot from them.</p>
+
+<ul>
+    <li>More or less the list of those can be found
+    here <a href="https://www.love2d.org/wiki/Graphical_User_Interface">love2d ui libs</a>.</li>
+    <li>Also see <a href="https://codeberg.org/1414codeforge/yui">yui</a></li>
+</ul>
+
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2025-11-16 10:17:18 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

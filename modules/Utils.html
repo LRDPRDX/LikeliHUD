@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>likeliHUD</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>likeliHUD</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>Utils</strong></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Block.html">Block</a></li>
+  <li><a href="../classes/Layout.html">Layout</a></li>
+  <li><a href="../classes/Rectangle.html">Rectangle</a></li>
+  <li><a href="../classes/Image.html">Image</a></li>
+  <li><a href="../classes/Stack.html">Stack</a></li>
+  <li><a href="../classes/Label.html">Label</a></li>
+  <li><a href="../classes/ImageButton.html">ImageButton</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/README.md.html">README</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/buttons.lua.html">buttons.lua</a></li>
+  <li><a href="../examples/events.lua.html">events.lua</a></li>
+  <li><a href="../examples/fill.lua.html">fill.lua</a></li>
+  <li><a href="../examples/layout.lua.html">layout.lua</a></li>
+  <li><a href="../examples/o.lua.html">o.lua</a></li>
+  <li><a href="../examples/simple.lua.html">simple.lua</a></li>
+  <li><a href="../examples/squares.lua.html">squares.lua</a></li>
+  <li><a href="../examples/start.lua.html">start.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>Utils</code></h1>
+<p>Different utility functions</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#utils.round">utils.round (x)</a></td>
+	<td class="summary">Round function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#utils.inside">utils.inside (x0, y0, x, y, w, h)</a></td>
+	<td class="summary">Tells whether or not a given point lies inside an axis-aligned rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#utils.FSM">utils.FSM (t)</a></td>
+	<td class="summary">Creates a finite state machine.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "utils.round"></a>
+    <strong>utils.round (x)</strong>
+    </dt>
+    <dd>
+    Round function.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         A number.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <code>math.floor(x + 0.5)</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "utils.inside"></a>
+    <strong>utils.inside (x0, y0, x, y, w, h)</strong>
+    </dt>
+    <dd>
+    Tells whether or not a given point lies inside an axis-aligned rectangle.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x0</span>
+         The point's x-coordinate.
+        </li>
+        <li><span class="parameter">y0</span>
+         The point's y-coordinate.
+        </li>
+        <li><span class="parameter">x</span>
+         x-coordinate of the top-left corner of the rectangle.
+        </li>
+        <li><span class="parameter">y</span>
+         y-coordinate of the top-left corner of the rectangle.
+        </li>
+        <li><span class="parameter">w</span>
+         Width of the rectangle.
+        </li>
+        <li><span class="parameter">h</span>
+         Height of the rectangle.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Whether the point <code>(x0, y0)</code>
+ lies inside the rectangle <code>(x, y, w, h)</code>.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "utils.FSM"></a>
+    <strong>utils.FSM (t)</strong>
+    </dt>
+    <dd>
+    Creates a finite state machine.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+
+<p> A table containing events, states and transitions.</p>
+
+<ul>
+    <li><p><code>events</code> : an array of event IDs. Technically can be of any type that
+    is allowed for a table key, but it is more convenient to use strings.</p></li>
+    <li><p><code>states</code> : an array of state IDs. Technically can be of any type that
+    is allowed for a table key, but it is more convenient to use strings.</p></li>
+    <li><p><code>transitions</code> : a table of the following form.</p>
+
+<pre><code>transitions = {
+    eventID = {
+        stateID_from = { state = stateID_to, action = f },
+        stateID_from = { state = stateID_to, action = f },
+        ...
+    },
+    eventID = {
+        stateID_from = { state = stateID_to, action = f },
+    },
+    ...
+
+    initial = stateID,
+}
+</code></pre>
+<p>where <code>eventID</code> denotes the event that causes the transition,
+<code>stateID_from</code> and <code>stateID_to</code> is the current and the next state
+respectively, and <code>action</code> is a function that is called each time this
+transition is active. Also it <strong>must</strong> contain the initial state under the
+<code>initial</code> key.
+Events are processed via the <code>process</code> method: <code>fsm:process(event)</code>.
+Below you can see an FSM which is used for managing
+mouse events in this library (which diagram can be seen in the <a href="../classes/Block.html#block:new">Block:new</a>
+section):</p></li>
+</ul>
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> m = self.mouse
+
+utils.<span class="function-name">FSM</span> {
+    events = {
+        <span class="string">'press'</span>,
+        <span class="string">'inside'</span>,
+        <span class="string">'outside'</span>,
+        <span class="string">'release'</span>,
+    },
+
+    states = {
+        <span class="string">'idle'</span>,
+        <span class="string">'hovered'</span>,
+        <span class="string">'pressed'</span>
+    },
+
+    transitions = {
+        [<span class="string">'press'</span>]   = {
+            [<span class="string">'hovered'</span>] = { state = <span class="string">'pressed'</span>, action = <span class="function-name">f</span>(m.onPress) }
+        },
+        [<span class="string">'inside'</span>]  = {
+            [<span class="string">'idle'</span>]    = { state = <span class="string">'hovered'</span>, action = <span class="function-name">f</span>(m.onEnter) }
+        },
+        [<span class="string">'outside'</span>] = {
+            [<span class="string">'pressed'</span>] = { state = <span class="string">'idle'</span>, action = <span class="function-name">f</span>(m.onExit) },
+            [<span class="string">'hovered'</span>] = { state = <span class="string">'idle'</span>, action = <span class="function-name">f</span>(m.onExit) },
+        },
+        [<span class="string">'release'</span>] = {
+            [<span class="string">'pressed'</span>] = { state = <span class="string">'hovered'</span>, action = <span class="function-name">f</span>(m.onClick) }
+        },
+    },
+
+    initial = <span class="string">'idle'</span>
+}</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2025-11-16 10:17:18 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

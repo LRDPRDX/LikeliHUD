@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>likeliHUD</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>likeliHUD</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/buttons.lua.html">buttons.lua</a></li>
+  <li><a href="../examples/events.lua.html">events.lua</a></li>
+  <li><a href="../examples/fill.lua.html">fill.lua</a></li>
+  <li><strong>layout.lua</strong></li>
+  <li><a href="../examples/o.lua.html">o.lua</a></li>
+  <li><a href="../examples/simple.lua.html">simple.lua</a></li>
+  <li><a href="../examples/squares.lua.html">squares.lua</a></li>
+  <li><a href="../examples/start.lua.html">start.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Utils.html">Utils</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Block.html">Block</a></li>
+  <li><a href="../classes/Layout.html">Layout</a></li>
+  <li><a href="../classes/Rectangle.html">Rectangle</a></li>
+  <li><a href="../classes/Image.html">Image</a></li>
+  <li><a href="../classes/Stack.html">Stack</a></li>
+  <li><a href="../classes/Label.html">Label</a></li>
+  <li><a href="../classes/ImageButton.html">ImageButton</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/README.md.html">README</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>layout.lua</h2>
+<pre>
+<span class="keyword">local</span> ui = <span class="global">require</span>(<span class="string">'likelihud'</span>)
+
+<span class="keyword">local</span> layout = ui.<span class="function-name">Layout</span> {
+    rows = <span class="number">3</span>,
+    columns = <span class="number">1</span>,
+
+    ui.<span class="function-name">Layout</span> {
+        rows    = <span class="number">2</span>,
+        columns = <span class="number">3</span>,
+
+        ui.<span class="function-name">Label</span> {
+            text   = <span class="string">'Hello'</span>,
+        },
+
+        ui.<span class="function-name">Label</span> {
+            text   = <span class="string">'Lua'</span>,
+        },
+
+        ui.<span class="function-name">Label</span> {
+            text   = <span class="string">'Chat'</span>,
+        },
+
+        ui.<span class="function-name">Layout</span> {
+            rows    = <span class="number">2</span>,
+            columns = <span class="number">2</span>,
+
+            ui.<span class="function-name">Label</span> {
+                text       = <span class="string">'Layout'</span>,
+            },
+
+            ui.<span class="function-name">Label</span> {
+                text       = <span class="string">'inside'</span>,
+            },
+
+            ui.<span class="function-name">Label</span> {
+                text       = <span class="string">'another'</span>,
+            },
+
+            ui.<span class="function-name">Layout</span> {
+                rows    = <span class="number">2</span>,
+                columns = <span class="number">2</span>,
+
+                ui.<span class="function-name">Image</span> {
+                    path   = <span class="string">'images/lua-logo-64.png'</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text       = <span class="string">'Layout'</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text       = <span class="string">'inside'</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text       = <span class="string">'another'</span>,
+                },
+            }
+        },
+
+        ui.<span class="function-name">Stack</span> {
+            ui.<span class="function-name">Image</span> {
+                path   = <span class="string">'images/lua-logo-128.png'</span>,
+            },
+
+            ui.<span class="function-name">Layout</span> {
+                rows    = <span class="number">3</span>,
+                columns = <span class="number">3</span>,
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'|left + top|'</span>,
+                    align  = <span class="string">'left+top'</span>,
+                    pad    = <span class="number">10</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'|top|'</span>,
+                    align  = <span class="string">'top'</span>,
+                    pad    = <span class="number">10</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'|top + right|'</span>,
+                    align  = <span class="string">'top+right'</span>,
+                    pad    = <span class="number">10</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'|left|'</span>,
+                    align  = <span class="string">'left'</span>,
+                    pad    = <span class="number">10</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'|center|'</span>,
+                    align  = <span class="string">'center'</span>,
+                    color  = { <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span> },
+                    pad    = <span class="number">10</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'|right|'</span>,
+                    align  = <span class="string">'right'</span>,
+                    pad    = <span class="number">10</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'|left + bottom|'</span>,
+                    align  = <span class="string">'left+bottom'</span>,
+                    pad    = <span class="number">10</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'|bottom|'</span>,
+                    align  = <span class="string">'bottom'</span>,
+                    pad    = <span class="number">10</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'|right + bottom|'</span>,
+                    align  = <span class="string">'right+bottom'</span>,
+                    pad    = <span class="number">10</span>,
+                },
+            }
+        },
+
+        ui.<span class="function-name">Stack</span> {
+            ui.<span class="function-name">Image</span> {
+                path   = <span class="string">'images/love2d.png'</span>,
+            },
+
+            ui.<span class="function-name">Layout</span> {
+                rows    = <span class="number">2</span>,
+                columns = <span class="number">2</span>,
+
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'Stack:'</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'Image'</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'and'</span>,
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text   = <span class="string">'Layout'</span>,
+                }
+            }
+        },
+    },
+
+    ui.<span class="function-name">Layout</span> {
+        rows       = <span class="number">1</span>,
+        columns    = <span class="number">4</span>,
+
+        ui.<span class="function-name">Image</span> {
+            path      = <span class="string">'images/lua-logo-64.png'</span>,
+            fill      = { y = <span class="keyword">true</span> },
+            pad       = <span class="number">5</span>,
+        },
+
+        ui.<span class="function-name">Image</span> {
+            path   = <span class="string">'images/offset.png'</span>,
+
+            inside = {
+                ui.<span class="function-name">Label</span> {
+                    text = <span class="string">'1'</span>,
+                    offset = {
+                        y      = <span class="number">10</span>,
+                        height = <span class="number">24</span>,
+                        width  = <span class="number">160</span>,
+                        x      = <span class="number">20</span>,
+                    },
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text = <span class="string">'2'</span>,
+                    offset = {
+                        y      = <span class="number">56</span>,
+                        height = <span class="number">36</span>,
+                        width  = <span class="number">36</span>,
+                        x      = <span class="number">20</span>,
+                    },
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text = <span class="string">'3'</span>,
+                    offset = {
+                        y      = <span class="number">94</span>,
+                        height = <span class="number">26</span>,
+                        width  = <span class="number">84</span>,
+                        x      = <span class="number">94</span>,
+                    },
+                },
+
+                ui.<span class="function-name">Label</span> {
+                    text = <span class="string">'4'</span>,
+                    offset = {
+                        y      = <span class="number">150</span>,
+                        height = <span class="number">40</span>,
+                        width  = <span class="number">102</span>,
+                        x      = <span class="number">40</span>,
+                    }
+                }
+            }
+        },
+
+        ui.<span class="function-name">Image</span> {
+            path   = <span class="string">'images/lua-logo-64.png'</span>,
+        },
+
+        ui.<span class="function-name">Image</span> {
+            path      = <span class="string">'images/lua-logo-64.png'</span>,
+            fill      = { y = <span class="keyword">true</span> },
+            pad       = <span class="number">5</span>,
+        },
+    },
+
+    ui.<span class="function-name">Layout</span> {
+        fill       = { x = <span class="keyword">true</span> },
+        rows       = <span class="number">1</span>,
+        columns    = <span class="number">4</span>,
+
+        ui.<span class="function-name">Image</span> {
+            path       = <span class="string">'images/lua-logo-64.png'</span>,
+            fill       = { },
+            pad        = <span class="number">5</span>,
+        },
+
+        ui.<span class="function-name">Image</span> {
+            path       = <span class="string">'images/lua-logo-64.png'</span>,
+            fill       = { },
+            pad        = <span class="number">5</span>,
+        },
+
+        ui.<span class="function-name">Image</span> {
+            path       = <span class="string">'images/lua-logo-64.png'</span>,
+            fill       = { },
+            pad        = <span class="number">5</span>,
+        },
+
+        ui.<span class="function-name">Image</span> {
+            path       = <span class="string">'images/lua-logo-64.png'</span>,
+            fill       = { },
+            pad        = <span class="number">5</span>,
+        },
+    }
+}
+
+<span class="keyword">for</span> block <span class="keyword">in</span> layout:<span class="function-name">traverse</span>() <span class="keyword">do</span>
+    block.border = <span class="keyword">true</span>
+<span class="keyword">end</span>
+
+<span class="keyword">return</span> layout</pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2025-11-16 10:17:18 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
