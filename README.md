@@ -84,7 +84,7 @@ Run `main.lua` :
 love path/to/likelihud
 ```
 
-and press `1`, `2`, `3` to switch between examples. See the code [here](/examples).
+and press `1`, `2`, `3`, `4`, `5`, `6` to switch between examples. See the code [here](/examples).
 
 ### Demo
 
