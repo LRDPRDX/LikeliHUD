@@ -323,6 +323,26 @@ function Layout:doDraw()
     end
 end
 
+--- Add new element.
+-- Adds an element to this layout. This function can be used when the layout cannot be fully
+-- constructed with the `Layout:new` method and adding elements must be postponed.
+-- @param child A block to add.
+-- @usage
+--
+-- local list = { 'foo', 'bar', 'baz' }
+-- local layout = ui.Layout {
+--   rows    = 1,
+--   columns = #list,
+-- }
+--
+-- for _, v in ipairs(list) do
+--   layout:add(ui.Label { text = v })
+-- end
+function Layout:add (child)
+    assert(#self < self.columns * self.rows, 'Cannot add more elements: the layout is full')
+    table.insert(self, child)
+end
+
 --- Mouse events.
 -- @section mouse
 

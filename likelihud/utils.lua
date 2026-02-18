@@ -24,6 +24,23 @@ function utils.inside (x0, y0, x, y, w, h)
            y0 >= y and y0 <= (y + h)
 end
 
+--- Clears the array part of the table.
+-- @param t A table.
+function utils.clearArray (t)
+    local length = #t
+    for i = 1, length do
+        t[i] = nil
+    end
+end
+
+--- Clears the table.
+-- @param t A table.
+function utils.clear (t)
+    for k, _ in pairs(t) do
+        t[k] = nil
+    end
+end
+
 --- Creates a finite state machine.
 -- @param t A table containing events, states and transitions.
 --
@@ -91,37 +108,37 @@ end
 --     initial = 'idle'
 -- }
 function utils.FSM (t)
-    self = {}
-    self.events = {}
+    local fsm = {}
+    fsm.events = {}
     for i, e in ipairs(t.events) do
-        if self.events[e] then
+        if fsm.events[e] then
             error(('Duplicated event : %s'):format(e), 2)
         end
 
-        self.events[e] = i
+        fsm.events[e] = i
     end
 
-    self.states = {}
+    fsm.states = {}
     for i, s in ipairs(t.states) do
-        if self.states[s] then
+        if fsm.states[s] then
             error(('Duplicated state : %s'):format(s), 2)
         end
 
-        self.states[s] = i
+        fsm.states[s] = i
     end
 
-    self.state = t.initial
-    if not self.states[self.state] then
-        error(('Invalid initial state : %s'):format(tostring(self.state)), 2)
+    fsm.state = t.initial
+    if not fsm.states[fsm.state] then
+        error(('Invalid initial state : %s'):format(tostring(fsm.state)), 2)
     end
 
-    self.transitions = t.transitions
+    fsm.transitions = t.transitions
 
     local process = function (self, event)
         local transitions = self.transitions
         local state       = self.state
 
-        local to = self.transitions[event] and self.transitions[event][state]
+        local to = transitions[event] and transitions[event][state]
                    or nil
 
         if not to then
@@ -135,9 +152,9 @@ function utils.FSM (t)
         self.state = to.state
     end
 
-    self.process = process
+    fsm.process = process
 
-    return self
+    return fsm
 end
 
 return utils

@@ -175,7 +175,6 @@
 -- See below for details.
 -- @classmod Block
 
-local Signal = require('hump.signal')
 local Class  = require('subclass')
 
 local UI    = (...):gsub('Block$', '')
@@ -252,7 +251,7 @@ local Block = Class:subclass('Block')
 -- visible
 -- * `color`: a color like in
 -- [love2d](https://www.love2d.org/wiki/love.graphics.setColor)
--- (the table variant). For different type of a block it has different
+-- (the table variant). For different block types this property might have a different
 -- meaning. See concrete
 -- type. Default is nil.
 -- * `pad` : a non-negative number. The minimum gap between the block's border
@@ -621,7 +620,7 @@ end
 --   }
 -- }
 --
--- for i, b in UI:traverse() do
+-- for b in UI:traverse() do
 --   b.border = true
 -- end
 function Block:traverse()
@@ -676,8 +675,42 @@ function Block:mousereleased(x, y, button, istouch, presses)
 end
 
 --- Events.
--- Communication with the external world is defined through the use of
--- `Event`s. An `Event` is any table with the mandatory `id` key and optional
+-- Communication with the external world is defined through the use of `Event`'s.
+-- Events can go in two directions: from the external world to a block, and vice versa.
+-- The mechanisms are different in each case.
+--
+-- See the diagram on Fig. 5.
+--
+--
+--    Fig. 5
+--
+--    External world
+--
+--    ┌────────────┐                  ┌───────────────────────────┐
+--    │ Event      ├──────push───────────┐      BLOCK             │
+--    └────────────┘                  │  │                        │
+--                                    │  │   on = {               │
+--                                    │  └───▶ event = function ()│
+--                                    │      }                    │
+--    ┌────────────┐                  │                           │
+--    │ Queue      │                  │           ┌───────┐       │
+--    │            │                  │      emit │Event  │       │
+--    │  - event   │                  │           └───┬───┘       │
+--    │  - event   │<─────emit────────────────────────┘           │
+--    └─┬──────────┘                  └───────────────────────────┘
+--      │
+--      │
+--      │                ┌───────────┐
+--      │                │ process   │
+--      └────────────────▶           │
+--                       │ events    │
+--                       └───────────┘
+--
+--
+-- To deliver an event _to_ a block tree you use the
+-- `Block:push` method (see below).
+--
+-- An `Event` in this case is any table with the mandatory `id` key and optional
 -- data. For example, this table can be an `Event`:
 --
 --    local event = {
@@ -710,19 +743,24 @@ end
 --  the label and call the corresponding function with 2 arguments:
 --  `self` is the label object, and the `event` itself.
 --
---  _NOTE_: this means you cannot easily push an event to a non-root
---  block. Also it means that triggering an event propagation
---  from one block to another is not straightforward: you probably want to
---  emit a signal from one block which in turn will push the corresponding
---  event to the root element. See the `buttons.lua` for an example.
---
 -- See the `events.lua` file for an example.
+--
+-- If you want to emit an event _from_ a block on the other hand you use the `Block:emit` method.
+-- Before doing that you must register the event queue for the block tree you want emit signals
+-- from, and then later handle the events in that queue. It means that in order to, for example,
+-- affect one element (from a block tree) from another you need to do it in 2 steps:
+-- you emit an event from one element, and then when you handle that event you push another
+-- event back to the block tree. See an example below.
+--
+-- See also the `buttons.lua` for an example. (The queue is registered and processed in main.lua)
+--
 -- @section signals
 
---- Pushes an event to the block and to all of its child down the tree.
+--- Pushes an event to the block and to all of its children down the tree.
 -- @param event A table. _NOTE_: it MUST have the `id` key which is often just
 -- a string.
---
+-- @see
+-- Block:filter
 function Block:push (event)
     local callback = self.on and self.on[event.id]
     if callback then callback (self, event) end
@@ -762,10 +800,74 @@ end
 -- for the subtree starting from `self`).
 -- _NOTE_: you can either pass this function as a property in the constructor
 -- or override the method. See `events.lua` for an example.
+-- @see
+-- Block:push
 function Block:filter (event)
     return true
 end
 
+--- Registers the event queue.
+-- Registers the event queue for this block and all of its children. Every time an element
+-- emits an event it will be inserted into this queue. You can later iterate over the queue and
+-- handle the events.
+-- _NOTE:_ you can unregister the queue by calling this method with no arguments.
+-- _NOTE:_ Once you've done processing the queue
+-- you MUST clear the queue. **Don't** reassign the queue to an empty table - it will break
+-- the reference.
+-- You can use the `Utils.clearArray` function to clear your queue.
+--
+-- @param queue [optional] A table.
+-- @usage
+--
+-- local UI = ui.Layout {
+--   ui.ImageButton {
+--     onClick = function (self)
+--       self:emit('button.pressed')
+--     end
+--   },
+--
+--   ui.Label {
+--     text = 'Foo'
+--   }
+-- }
+--
+-- local queue = {} -- this is your queue
+-- UI:registerQ(queue)
+--
+-- -- Process events
+-- for i, event in ipairs(queue) do
+--   print(event) -- prints 'button.pressed'
+-- end
+--
+-- -- Clear the queue
+-- utils.clearArray(queue)
+-- -- Don't do the following
+-- -- queue = {} -- this will break the reference
+--
+-- @see Block:emit
+-- @see Utils.clearArray
+function Block:registerQ (queue)
+    self.queue = queue
+
+    for child in self:traverse() do
+        child.queue = queue
+    end
+end
+
+--- Emits an event by putting it inside the queue of this element which was registered
+-- with the `Block:registerQ` method. Doesn't do anything if the queue is not registered. 
+-- @param event Anything that can be inserted in the queue and handled later. I recommend to put
+-- an Event as described in the beginning of this section, namely, a table like this:
+-- `{ id = 'next.page', data = 2 }`. But you can emit anything you can later identify and handle.
+--
+-- @see Block:registerQ
+function Block:emit (event)
+    if not self.queue then
+        return
+    end
+
+    table.insert(self.queue, event)
+end
 
 --- User defined blocks.
 -- ⚠️ This section is not complete and to be done. ⚠️

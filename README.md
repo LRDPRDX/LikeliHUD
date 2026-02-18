@@ -56,18 +56,16 @@ end
     - `Stack`
     - `Image`
     - `Label`
+- Communication with the external logic through the events
 - Declarative approach. Similar to QML.
 - Grid layout. Nested layouts are possible.
 - Auto alignment. Alignment hints : `center`, `top`, `bottom`, `left` or a
   combination.
 - Each element inside a layout can be set to fill `width`, `height`, both or
   none.
-- Communication with the external logic through the events which elements
-are subscribed to
 
 ## Dependencies
 
- - [hump](https://hump.readthedocs.io/en/latest/signal.html) for signals
  - [subclass](https://github.com/LRDPRDX/lua-class) (used internally)
 
 ## Installation

@@ -25,7 +25,8 @@ local ImageButton = Image:subclass('ImageButton')
 --        quad.current | 1      | 2       | 3       | 2       |
 --
 --
--- * `onClick` : a function. Called whenever the button is clicked.
+-- * `onClick` : a function. Called whenever the button is clicked. The button object itself
+-- is passed to that function on call.
 --
 -- * `mouse` : ⚠️ Don't override this property. If you want a button with
 -- a custom mouse
