@@ -350,10 +350,6 @@ end
 -- Propagates this event to all of its direct children with all of the
 -- arguments it is called.
 function Layout:doMousemoved (x, y, dx, dy, istouch)
-    if #self == 0 then
-        return
-    end
-
     for _, child in ipairs(self) do
         child:mousemoved (x, y, dx, dy, istouch)
     end
@@ -363,10 +359,6 @@ end
 -- Propagates this event to all of its direct children with all of the
 -- arguments it is called.
 function Layout:doMousepressed (x, y, button, istouch, presses)
-    if #self == 0 then
-        return
-    end
-
     for _, child in ipairs(self) do
         child:mousepressed (x, y, button, istouch, presses)
     end
@@ -376,10 +368,6 @@ end
 -- Propagates this event to all of its direct children with all of the
 -- arguments it is called.
 function Layout:doMousereleased (x, y, button, istouch, presses)
-    if #self == 0 then
-        return
-    end
-
     for _, child in ipairs(self) do
         child:mousereleased (x, y, button, istouch, presses)
     end
