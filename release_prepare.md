@@ -1,5 +1,5 @@
 - commit changes
-- change the `package_version` in the rockspec file
+- change the `package_version` in the rockspec file (and anything else if needed)
 - rename the rockspec file
 - check it with `luarocks lint <file>`
 - commit changes
