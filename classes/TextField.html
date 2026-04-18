@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>likeliHUD</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>likeliHUD</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Class_TextField">Class TextField </a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Block.html">Block</a></li>
+  <li><a href="../classes/Layout.html">Layout</a></li>
+  <li><a href="../classes/Rectangle.html">Rectangle</a></li>
+  <li><a href="../classes/Image.html">Image</a></li>
+  <li><a href="../classes/Stack.html">Stack</a></li>
+  <li><a href="../classes/Label.html">Label</a></li>
+  <li><a href="../classes/ImageButton.html">ImageButton</a></li>
+  <li><strong>TextField</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Utils.html">Utils</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/README.md.html">README</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/buttons.lua.html">buttons.lua</a></li>
+  <li><a href="../examples/events.lua.html">events.lua</a></li>
+  <li><a href="../examples/fill.lua.html">fill.lua</a></li>
+  <li><a href="../examples/focus.lua.html">focus.lua</a></li>
+  <li><a href="../examples/layout.lua.html">layout.lua</a></li>
+  <li><a href="../examples/o.lua.html">o.lua</a></li>
+  <li><a href="../examples/simple.lua.html">simple.lua</a></li>
+  <li><a href="../examples/squares.lua.html">squares.lua</a></li>
+  <li><a href="../examples/start.lua.html">start.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>TextField</code></h1>
+<p>Used to enter text.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Class_TextField">Class TextField </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#textfield:new">textfield:new ()</a></td>
+	<td class="summary">Constructor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#textfield:drawCursor">textfield:drawCursor (cursorX, cursorY, sx, sy)</a></td>
+	<td class="summary">Draws the cursor.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header has-description"><a name="Class_TextField"></a>Class TextField </h2>
+
+          <div class="section-description">
+          Represents a text field.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "textfield:new"></a>
+    <strong>textfield:new ()</strong>
+    </dt>
+    <dd>
+    Constructor. </p>
+
+<ul>
+    <li><code>text</code> : a string. The initial text to fill the text field with.</li>
+    <li><code>maxLength</code> : an integer (default 100).
+    The maximum length allowed for the text inside this text field.</li>
+    <li><code>margin</code> : an integer (default 10).
+    The number of pixels to display the content of the textfield
+    behind the left and right edges: useful to see whether there is text further
+    on the left (right) when the cursor at the left (right) edge (see Fig.1 below).</li>
+    <li><code>width</code> : an integer (default 100). The width of the text field. <em>NOTE:</em> <code>margin</code> is not
+    included: it means that the full width would be <code>width + 2 * margin</code> (see Fig.1 below).</li>
+</ul>
+
+<p> This block has 4 callbacks (see the <code>on</code> property in <a href="../classes/Block.html#block:new">Block:new</a>):</p>
+
+<ul>
+    <li><code>backspace</code> : to erase one character under the cursor</li>
+    <li><code>left</code>      : to move the cursor one character left</li>
+    <li><code>right</code>     : to move the cursor one character right</li>
+    <li><code>textinput</code> : to insert text (expects the <code>text</code> field in the passed event)</li>
+</ul>
+
+<p> See <a href="../examples/focus.lua.html#">focus.lua</a> for the example.
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> UI = ui.<span class="function-name">Layout</span> {
+  ui.<span class="function-name">TextField</span> {
+    width = <span class="number">200</span>,
+  },
+
+  ui.<span class="function-name">TextField</span> {
+    width = <span class="number">100</span>,
+  },
+}
+
+<span class="keyword">function</span> love.<span class="function-name">textinput</span>(text)
+  UI:<span class="function-name">push</span> {
+    id       = <span class="string">'textinput'</span>,
+    text     = text,
+    filter   = <span class="keyword">function</span> (this) <span class="keyword">return</span> this.focus <span class="keyword">end</span>
+  }
+<span class="keyword">end</span>
+<span class="comment">-- without filter above both text fields will be receiving text</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "textfield:drawCursor"></a>
+    <strong>textfield:drawCursor (cursorX, cursorY, sx, sy)</strong>
+    </dt>
+    <dd>
+
+<p>Draws the cursor.
+ Override this function if you want to draw the cursor in a custom way. This function will
+ be called with 4 useful arguments (see below).
+ Default cursor is just a one pixel wide vertical line.</p>
+
+<pre><code>Fig. 1
+                                  sx
+                    │◀────────────────────────────▶│
+                    │                              │
+                   margin       cursorX       margin  ┌──── not visible
+                    │◀─▶│         │            │◀─▶│  │
+   not visible ─┐   │   │         │            │   │  │
+                ▼   ┌───┬─────────▼────────────┬───┐  ▼  ─▲─   ◀──── cursorY
+             TEXT HE│RE │TEXT HERE TEXT HERE TE│XT │HERE  │  sy
+             │      └───┼─────────▲────────────┼───┘     ─▼─
+             │          │                      │
+             │◀────────▶│◀────────────────────▶│
+                shift            width
+</code></pre>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cursorX</span>
+         An integer. The x coordinate of the cursor position.
+        </li>
+        <li><span class="parameter">cursorY</span>
+         An integer. The y coordinate of the cursor position.
+        </li>
+        <li><span class="parameter">sx</span>
+         An integer. The width of the text bar.
+        </li>
+        <li><span class="parameter">sy</span>
+         An integer. The height of the text bar.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2026-04-18 17:41:00 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
