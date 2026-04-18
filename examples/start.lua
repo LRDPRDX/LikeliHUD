@@ -11,7 +11,7 @@ local start = ui.Layout {
         fill = { x = true, y = false },
 
         ui.Label {
-            text  = 'Press 1, 2, 3, ... to switch between examples'
+            text  = 'Press 1, 2, 3, 4, 5, 6, 7, 8 to switch between the examples'
         },
 
         ui.Label {

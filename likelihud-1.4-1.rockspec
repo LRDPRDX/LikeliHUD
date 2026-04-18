@@ -1,5 +1,5 @@
 local package_name      = 'likelihud'
-local package_version   = '1.3'
+local package_version   = '1.4'
 local rockspec_revision = '1'
 
 rockspec_format = '3.0'
@@ -22,6 +22,7 @@ description = {
         * Rectangle
         * Stack
         * ImageButton
+        * TextField
    ]],
    homepage = 'https://lrdprdx.github.io/LikeliHUD',
    license  = 'MIT <http://opensource.org/licenses/MIT>',
@@ -43,6 +44,7 @@ build = {
       ['likelihud.Rectangle']   = 'likelihud/Rectangle.lua',
       ['likelihud.Stack']       = 'likelihud/Stack.lua',
       ['likelihud.ImageButton'] = 'likelihud/ImageButton.lua',
+      ['likelihud.TextField']   = 'likelihud/TextField.lua',
       ['likelihud.utils']       = 'likelihud/utils.lua',
    },
 }

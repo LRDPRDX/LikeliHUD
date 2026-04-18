@@ -9,6 +9,7 @@ return {
     Stack     = require(UI .. 'Stack'),
 
     ImageButton = require(UI .. 'ImageButton'),
+    TextField   = require(UI .. 'TextField'),
 
     utils     = require(UI .. 'utils')
 }

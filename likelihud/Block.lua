@@ -1,4 +1,4 @@
---- **START HERE**. Parent of every element in the system.
+--- **START HERE**. The base class of every element in the system.
 --
 -- **Introduction**
 --
@@ -249,6 +249,9 @@ local Block = Class:subclass('Block')
 -- * `visible` : boolean.
 -- `true` (default) means the element is visible (drawn). Otherwise it is not
 -- visible
+--
+-- * `font` : a font (default is `love.graphics.getFont()`). Used internally by some blocks
+-- like `TextField`.
 -- * `color`: a color like in
 -- [love2d](https://www.love2d.org/wiki/love.graphics.setColor)
 -- (the table variant). For different block types this property might have a different
@@ -469,10 +472,22 @@ local Block = Class:subclass('Block')
 -- `onClick`
 -- are used to change the `color` property of the rectangle.
 function Block:new()
+    self.focus   = false
     self.visible = self.visible or true
     self.pad     = self.pad     or 0
     self.align   = self.align   or 'center'
     self.fill    = self.fill    or { x = true, y = true }
+    self.font    = self.font    or love.graphics.getFont()
+
+    for _, child in ipairs(self) do
+        child.parent = self
+    end
+
+    if self.inside then
+        for _, child in ipairs(self.inside) do
+            child.parent = self
+        end
+    end
 end
 
 --- Returns the size of the block.
@@ -623,6 +638,8 @@ end
 -- for b in UI:traverse() do
 --   b.border = true
 -- end
+--
+-- TODO: filtered traversal
 function Block:traverse()
     return function (stack)
         if #stack == 0 then return nil end
@@ -711,12 +728,29 @@ end
 -- `Block:push` method (see below).
 --
 -- An `Event` in this case is any table with the mandatory `id` key and optional
--- data. For example, this table can be an `Event`:
+-- data and/or filter. For example, this table can be an `Event`:
 --
 --    local event = {
 --      id = 'button.pressed',
 --      key = 'space',
 --    }
+--
+-- or this
+--
+--    local event = {
+--      id = 'backspace',
+--      filter = function (self) return self.focus end -- only those which are focused
+--    }
+--
+-- or this
+--
+--    local event = {
+--      id = 'change.color',
+--      color = { 0.5, 0.5, 0.5 },
+--      filter = function (self) return self.border end, -- but only those with the border
+--    }
+--
+-- Note how the 'filter' field is a function and the target block passed as an argument.
 --
 -- The block which is supposed to react on events must have the
 -- corresponding `on` property of the following structure:
@@ -733,6 +767,13 @@ end
 -- i.e. it is a table where keys are events' IDs and values are
 -- callbacks to those events.
 -- A callback accepts two arguments: the block itself (`self`), and the event.
+-- _NOTE:_ a callback can return a value. If it returns `true` it means that the event was
+-- accepted. Once the event is accepted a special field `swallowed` is set to `true` on the
+-- event. This is useful when you want to push an event to the UI tree and if it was not
+-- accepted (by the tree) you use it somehow further. As an example consider you use
+-- the `q` button in order to exit your game but what if you have a text field focused at that
+-- moment. You don't want to exit this time, instead the `q` symbol should be printed in the
+-- field.
 --
 -- To send an event to a block you call the `push` method on the block with
 -- the event as the only argument:
@@ -742,6 +783,15 @@ end
 --  This call will propagate the event to
 --  the label and call the corresponding function with 2 arguments:
 --  `self` is the label object, and the `event` itself.
+--
+--  In order to see if the event was accepted you have to store the event into a variable and
+--  then check for the `swallowed` field:
+--
+--    local event = { id = 'text.changed', message = 'world' }
+--    l:push(event)
+--    if event.swallowed then
+--      ...
+--    end
 --
 -- See the `events.lua` file for an example.
 --
@@ -762,16 +812,20 @@ end
 -- @see
 -- Block:filter
 function Block:push (event)
-    local callback = self.on and self.on[event.id]
-    if callback then callback (self, event) end
-
-    local isAllowed, newEvent = self:filter(event)
-    if not isAllowed then -- break propagation
+    if event.filter and not event.filter(self) then
         return
     end
 
-    if newEvent then
-        event = newEvent
+    local callback = self.on and self.on[event.id]
+    if callback then
+        if callback (self, event) then
+            event.swallowed = true
+        end
+    end
+
+    local isAllowed = self:filter(event)
+    if not isAllowed then -- break propagation
+        return
     end
 
     for _, child in ipairs(self) do
@@ -795,9 +849,6 @@ end
 -- @return A boolean.
 -- `true` means that `event` propagates down the tree (i.e. to the children).
 -- `false` means the event is filtered out and the propagation breaks.
--- @return [optional] A table. If returned it MUST be a new event table.
--- This new event will replace the original one (but only
--- for the subtree starting from `self`).
 -- _NOTE_: you can either pass this function as a property in the constructor
 -- or override the method. See `events.lua` for an example.
 -- @see
@@ -814,6 +865,11 @@ end
 -- _NOTE:_ Once you've done processing the queue
 -- you MUST clear the queue. **Don't** reassign the queue to an empty table - it will break
 -- the reference.
+-- _NOTE:_ If you have modified the block tree by adding new elements **after** registering the
+-- queue for the tree, be sure you re-register the queue after adding new elements --
+-- otherwise those
+-- elements will have no queue at all (adding elements doesn't automatically register
+-- the queue for those elements).
 -- You can use the `Utils.clearArray` function to clear your queue.
 --
 -- @param queue [optional] A table.
@@ -841,7 +897,7 @@ end
 --
 -- -- Clear the queue
 -- utils.clearArray(queue)
--- -- Don't do the following
+-- -- Don't do the following to clear the queue
 -- -- queue = {} -- this will break the reference
 --
 -- @see Block:emit
@@ -851,6 +907,78 @@ function Block:registerQ (queue)
 
     for child in self:traverse() do
         child.queue = queue
+    end
+end
+
+--- Focuses this block and every its parent upwards the tree.
+-- _NOTE:_ this function also removes focus from the subtree that has focus at the time
+-- of calling this function if any. I.E. only one chain may be focused at a time.
+-- Intended to be used internally. Doesn't do anything if the block is already focused.
+-- @see Block:unsetFocus
+-- @see focus.lua
+function Block:setFocus ()
+    if self.focus then
+        return
+    end
+
+    -- Go up until we find a focused parent
+    local parent = self.parent
+    while parent do
+        if parent.focus == true then
+            -- when found unfocus the subtree starting from that parent with
+            -- the parent itself excluded
+            parent:unsetFocus(true)
+            break
+        end
+        parent = parent.parent
+    end
+
+    -- Go up again but this time focus every parent up to
+    -- the one we stopped in the procedure above
+    self.focus = true
+    parent = self.parent
+    while parent do
+        if parent.focus == true then
+            return
+        end
+
+        parent.focus = true
+        parent = parent.parent
+    end
+end
+
+--- Removes focus from this block and all focused children downwards the tree.
+-- @param skipSelf A boolean (default `false`). If `true` removes focus of all children but
+-- not this block itself.
+-- Intended to be used internally.
+-- @see Block:setFocus
+function Block:unsetFocus (skipSelf)
+    local block = self
+
+    if skipSelf then
+        goto skip_self
+    end
+
+    ::iteration::
+    block.focus = false
+    ::skip_self::
+
+    for _, child in ipairs(block) do
+        if child.focus == true then
+            block = child
+            goto iteration
+        end
+    end
+
+    if not block.inside then
+        return
+    end
+
+    for _, child in ipairs(block.inside) do
+        if child.focus == true then
+            block = child
+            goto iteration
+        end
     end
 end
 
