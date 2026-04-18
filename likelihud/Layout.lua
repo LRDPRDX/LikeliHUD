@@ -338,8 +338,11 @@ end
 -- for _, v in ipairs(list) do
 --   layout:add(ui.Label { text = v })
 -- end
+--
+-- @see Block:registerQ
 function Layout:add (child)
     assert(#self < self.columns * self.rows, 'Cannot add more elements: the layout is full')
+    child.parent = self
     table.insert(self, child)
 end
 
