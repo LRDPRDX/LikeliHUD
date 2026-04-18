@@ -11,6 +11,7 @@ file        = { 'likelihud/Block.lua',
                 'likelihud/Stack.lua',
                 'likelihud/Label.lua',
                 'likelihud/ImageButton.lua',
+                'likelihud/TextField.lua',
 
                 'likelihud/utils.lua',
             }
