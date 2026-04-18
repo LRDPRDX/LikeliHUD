@@ -50,6 +50,7 @@ end
 ## Feature list
 
 - Basic elements are :
+    - `TextField` (quite raw)
     - `ImageButton`
     - `Rectangle`
     - `Layout`
@@ -61,7 +62,7 @@ end
 - Grid layout. Nested layouts are possible.
 - Auto alignment. Alignment hints : `center`, `top`, `bottom`, `left` or a
   combination.
-- Each element inside a layout can be set to fill `width`, `height`, both or
+- Each element inside a layout can be set to fill `x` (width), `y` (height), both or
   none.
 
 ## Dependencies

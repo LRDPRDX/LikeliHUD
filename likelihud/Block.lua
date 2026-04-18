@@ -1,5 +1,9 @@
 --- **START HERE**. The base class of every element in the system.
 --
+-- **Source**
+--
+-- Source code can be found [here](https://github.com/LRDPRDX/LikeliHUD)
+--
 -- **Introduction**
 --
 -- (words/letters in **bold** in this section refer to the ones in the Fig. 1
