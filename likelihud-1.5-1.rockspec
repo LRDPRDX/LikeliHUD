@@ -1,5 +1,5 @@
 local package_name      = 'likelihud'
-local package_version   = '1.4'
+local package_version   = '1.5'
 local rockspec_revision = '1'
 
 rockspec_format = '3.0'
