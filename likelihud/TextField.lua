@@ -111,27 +111,27 @@ function TextField:new ()
         end
     }
 
-    self.on = {
-        ['backspace'] = function (this)
-            backspace(this)
-            return true
-        end,
+    self.on = self.on or {}
 
-        ['left'] = function (this)
-            left(this)
-            return true
-        end,
+    self.on['backspace'] = function (this)
+        backspace(this)
+        return true
+    end
 
-        ['right'] = function (this)
-            right(this)
-            return true
-        end,
+    self.on['left'] = function (this)
+        left(this)
+        return true
+    end
 
-        ['textinput'] = function (this, event)
-            textinput(this, event.text)
-            return true
-        end,
-    }
+    self.on['right'] = function (this)
+        right(this)
+        return true
+    end
+
+    self.on['textinput'] = function (this, event)
+        textinput(this, event.text)
+        return true
+    end
 end
 
 function TextField:doSize ()

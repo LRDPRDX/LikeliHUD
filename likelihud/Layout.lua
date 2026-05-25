@@ -341,7 +341,8 @@ end
 --
 -- @see Block:registerQ
 function Layout:add (child)
-    assert(#self < self.columns * self.rows, 'Cannot add more elements: the layout is full')
+    assert(child.parent == nil,              'Cannot add: the block already has parent')
+    assert(#self < self.columns * self.rows, 'Cannot add: the layout is full')
     child.parent = self
     table.insert(self, child)
 end

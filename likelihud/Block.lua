@@ -324,7 +324,8 @@ local Block = Class:subclass('Block')
 --        element:place(10, 10, 300, 300) -- actually placed in (20, 30, 200,
 --        200)
 --
--- * `inside` : a block. Special property which value must be a block. Let us
+-- * `inside` : an array of blocks. Special property which value must be
+-- an array of blocks. Let us
 -- explain the meaning of
 -- the `inside` property looking at the following example:
 --
@@ -409,7 +410,7 @@ local Block = Class:subclass('Block')
 --          }
 --        }
 -- Now wherever `hp` is placed the text inside it is placed correctly
--- automatically.
+-- automatically. See `Block:addInside`.
 --
 -- * `filter` : a function. It is supposed to filter the events if pushed
 -- to the element. See the <a href="#Events">Events</a> section for details.
@@ -492,6 +493,30 @@ function Block:new()
             child.parent = self
         end
     end
+end
+
+--- Adds an element to the `inside` property. Can be used when the `inside` property cannot be
+-- fully constructed in the `Block:new` method and adding elements must be postponed.
+-- @param child A block to add.
+-- @usage
+--
+-- local button = ui.ImageButton {
+--   ...
+-- }
+--
+-- local label = ui.Label {
+--   text = 'Foo'
+-- }
+--
+-- button.addInside (label)
+--
+-- @see Block:registerQ
+function Block:addInside(child)
+    assert(child.parent == nil, 'Cannot add: the block already has parent')
+
+    self.inside = self.inside or {}
+    table.insert(self.inside, child)
+    child.parent = self
 end
 
 --- Returns the size of the block.
@@ -869,7 +894,8 @@ end
 -- _NOTE:_ Once you've done processing the queue
 -- you MUST clear the queue. **Don't** reassign the queue to an empty table - it will break
 -- the reference.
--- _NOTE:_ If you have modified the block tree by adding new elements **after** registering the
+-- _NOTE:_ If you have modified the block tree by adding new elements
+-- (see `Layout:add` or `Block:addInside`) **after** registering the
 -- queue for the tree, be sure you re-register the queue after adding new elements --
 -- otherwise those
 -- elements will have no queue at all (adding elements doesn't automatically register
