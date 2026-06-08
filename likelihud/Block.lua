@@ -324,8 +324,27 @@ local Block = Class:subclass('Block')
 --        element:place(10, 10, 300, 300) -- actually placed in (20, 30, 200,
 --        200)
 --
--- * `inside` : an array of blocks. Special property which value must be
--- an array of blocks. Let us
+-- * `inside` : a table. Special property which value must be
+-- a table of the following structure:
+--
+--        inside = {
+--          -- the sequence (array) part
+--          ui.Block { id = '1st' },
+--          ui.Block { id = '2nd' },
+--          ...,
+--
+--          -- the hash part
+--          at = {
+--            'key1' = ui.Block { },
+--            'key2' = ui.Block { },
+--          }
+--        }
+--
+-- i.e. it is either a sequence of blocks, or it has the `at` table which values are blocks, or
+-- both. _NOTE_ : It MUST NOT have holes in its array part (i.e. `table.insert` and the length
+-- operator `#` work properly).
+--
+-- Let us
 -- explain the meaning of
 -- the `inside` property looking at the following example:
 --
@@ -412,6 +431,11 @@ local Block = Class:subclass('Block')
 -- Now wherever `hp` is placed the text inside it is placed correctly
 -- automatically. See `Block:addInside`.
 --
+-- _NOTE_: the array part of the `inside` property is processed _before_ the hash part.
+-- F.e. the array part is drawn first.
+--
+-- See `inside.lua` for the example.
+--
 -- * `filter` : a function. It is supposed to filter the events if pushed
 -- to the element. See the <a href="#Events">Events</a> section for details.
 --
@@ -492,12 +516,21 @@ function Block:new()
         for _, child in ipairs(self.inside) do
             child.parent = self
         end
+
+        if self.inside.at then
+            for _, child in pairs(self.inside.at) do
+                child.parent = self
+            end
+        end
     end
 end
 
 --- Adds an element to the `inside` property. Can be used when the `inside` property cannot be
 -- fully constructed in the `Block:new` method and adding elements must be postponed.
+-- _NOTE_ : Don't add elements to the `inside` property "manually", use this function instead.
 -- @param child A block to add.
+-- @param key If `nil` adds the element to the sequence (array) part of the `inside` table.
+-- Otherwise adds the block to the hash part of the `inside` table at the key `key`.
 -- @usage
 --
 -- local button = ui.ImageButton {
@@ -508,14 +541,28 @@ end
 --   text = 'Foo'
 -- }
 --
+-- -- wrong
+-- -- table.insert(button.inside, label)
+-- -- button.inside.at['text'] = label
+--
+-- -- right
 -- button.addInside (label)
+-- -- or
+-- button.addInside (label, 'text')
 --
 -- @see Block:registerQ
-function Block:addInside(child)
+function Block:addInside(child, key)
     assert(child.parent == nil, 'Cannot add: the block already has parent')
 
     self.inside = self.inside or {}
-    table.insert(self.inside, child)
+
+    if(key == nil) then
+        table.insert(self.inside, child)
+    else
+        self.inside.at = self.inside.at or {}
+        self.inside.at[key] = child
+    end
+
     child.parent = self
 end
 
@@ -610,13 +657,18 @@ function Block:place(x, y, w, h)
 
     self:doPlace(x, y, w, h)
 
-    if not self.inside then
-        return
-    end
+    if self.inside then
+        -- Place blocks that use this block as a coordinate reference
+        for _, item in ipairs(self.inside) do
+            item:place(self.x, self.y, s.x, s.y)
+        end
 
-    -- Place blocks that use this block as a coordinate reference
-    for _, item in ipairs(self.inside) do
-        item:place(self.x, self.y, s.x, s.y)
+        -- Don't forget about "the named" elements inside
+        if self.inside.at then
+            for _, item in pairs(self.inside.at) do
+                item:place(self.x, self.y, s.x, s.y)
+            end
+        end
     end
 end
 
@@ -643,6 +695,12 @@ function Block:draw()
         if self.inside then
             for _, item in ipairs(self.inside) do
                 item:draw()
+            end
+
+            if self.inside.at then
+                for _, item in pairs(self.inside.at) do
+                    item:draw()
+                end
             end
         end
     love.graphics.pop()
@@ -681,6 +739,12 @@ function Block:traverse()
         if block.inside then
             for _, child in ipairs(block.inside) do
                 table.insert(stack, child)
+            end
+
+            if block.inside.at then
+                for _, child in pairs(block.inside.at) do
+                    table.insert(stack, child)
+                end
             end
         end
         return block
@@ -865,6 +929,12 @@ function Block:push (event)
         for _, child in ipairs(self.inside) do
             child:push (event)
         end
+
+        if self.inside.at then
+            for _, child in pairs(self.inside.at) do
+                child:push (event)
+            end
+        end
     end
 end
 
@@ -1000,14 +1070,21 @@ function Block:unsetFocus (skipSelf)
         end
     end
 
-    if not block.inside then
-        return
-    end
+    if block.inside then
+        for _, child in ipairs(block.inside) do
+            if child.focus == true then
+                block = child
+                goto iteration
+            end
+        end
 
-    for _, child in ipairs(block.inside) do
-        if child.focus == true then
-            block = child
-            goto iteration
+        if block.inside.at then
+            for _, child in pairs(block.inside.at) do
+                if child.focus == true then
+                    block = child
+                    goto iteration
+                end
+            end
         end
     end
 end
