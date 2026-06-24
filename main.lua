@@ -22,6 +22,7 @@ local buttonsUI    = require('examples.buttons')
 local eventsUI     = require('examples.events')
 local focusUI      = require('examples.focus')
 local insideUI     = require('examples.inside')
+local elideUI      = require('examples.elide')
 local HUD          = nil
 
 local queue = {}
@@ -57,6 +58,7 @@ local keys = {
             ['7'] = function() updateHUD(eventsUI) end,
             ['8'] = function() updateHUD(focusUI) end,
             ['9'] = function() updateHUD(insideUI) end,
+            ['0'] = function() updateHUD(elideUI) end,
 
             ['q'] = function() love.event.quit() end,
         },

@@ -41,6 +41,116 @@ function utils.clear (t)
     end
 end
 
+local function textAtWidth (text, l, r, width, font)
+    -- Preconditions.
+    -- If they are true at the top of this function, they are also true
+    -- once the function returns. I.e. this function doesn't break them.
+    --
+    -- a) l <= r
+    -- b) l >= 1
+    -- c) text:sub(1, l) <= width
+    -- d) r <= text:len()
+    -- e) width >= 0
+    local prefix = text:sub(1, r)
+
+    -- At each call of this function text:sub(1, r) is at least
+    -- as wide as width (see (2) below). So if it is less or equal it
+    -- must be exactly equal
+    -- (unless it is strictly less on the very first call).
+    if font:getWidth(prefix) <= width then -- (1)
+        return prefix
+    end
+
+    local diff = math.floor((r - l) / 2)
+
+    -- diff is equal to zero iff either `r == l` or `r == l + 1`
+    -- but the former case (`r == l`) would violate the c) precondition
+    -- (see (1))
+    -- so the only option is `r == l + 1` which in turn means l is the
+    -- maximum possible number of chars we can fit.
+    if diff == 0 then
+        return text:sub(1, l)
+    end
+
+    -- otherwise diff is at least 1.
+    local midPoint        = l + diff
+    local widthAtMidPoint = font:getWidth(text:sub(1, midPoint))
+
+    if widthAtMidPoint >= width then -- (2)
+        r = midPoint
+    else
+        l = midPoint
+    end
+
+    return textAtWidth(text, l, r, width, font)
+end
+
+--- Returns the maximum substring (prefix) of a string which width
+--- is less than or equal to a given width.
+-- _NOTE_: this function will work only for fonts with monotonically
+-- increasing width once the length of the string increases. In other words,
+-- for any non-empty strings `S1`, `S2`: `width(S1 + S2) > width(S1)`.
+-- @param text A string. The original text to elide.
+-- @param width A non-negative number. The width to fit the text.
+-- @param font A font. The target font.
+-- @return A string. The maximum prefix of `text` which width
+-- (according to the font `font`) is less or equal to `width`.
+-- If `text` is an empty string returns an empty string.
+-- If `width` is 0 returns an empty string.
+function utils.textAtWidth (text, width, font)
+    assert(width >= 0, 'width must be non-negative')
+
+    if (width == 0) or
+       (text:len() == 0) or
+       (font:getWidth(text:sub(1, 1)) > width) then
+        return ''
+    end
+
+    return textAtWidth (text, 1, text:len(), width, font)
+end
+
+--- Places the block in a given enclosing cell with some default algorithm.
+-- It is unlikely you need this function ever -- it is used internally, but
+-- exposed for the sake of reusability.
+-- @param block
+-- @param x x coordinate of the enclosing cell
+-- @param y y coordinate of the enclosing cell
+-- @param w width of the enclosing cell
+-- @param h height of the enclosing cell
+-- @param s size of the block which must be used during placement. If `nil` then
+-- `Block:size` is used.
+--
+-- @see Block:place
+function utils.placeAt (block, x, y, w, h, s)
+    s = s or block:size()
+
+    -- Initial position at the center of the enclosing cell
+    block.x = utils.round(x + (w - s.x) / 2)
+    block.y = utils.round(y + (h - s.y) / 2)
+
+    local move = {
+        ['left']   = function()
+            block.x = x
+        end,
+
+        ['right']  = function()
+            block.x = x + (w - s.x)
+        end,
+
+        ['bottom'] = function()
+            block.y = y + (h - s.y)
+        end,
+
+        ['top']    = function()
+            block.y = y
+        end
+    }
+
+    for direction in block.align:gsub('%s+', ''):gmatch('([^+]+)') do
+        if move[direction] then move[direction]() end
+    end
+end
+
 --- Creates a finite state machine.
 -- @param t A table containing events, states and transitions.
 --
