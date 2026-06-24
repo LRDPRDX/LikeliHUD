@@ -2,5 +2,8 @@
 *.sw[a-z]
 
 # Documentation
-doc/
+/doc
 *.pdf
+
+# For testing purposes
+/misc
