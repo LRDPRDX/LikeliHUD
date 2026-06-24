@@ -50,10 +50,12 @@ local layout = ui.Layout {
 
                 ui.Label {
                     text       = 'inside',
+                    elide      = true,
                 },
 
                 ui.Label {
                     text       = 'another',
+                    elide      = true,
                 },
             }
         },
