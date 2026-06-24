@@ -637,8 +637,6 @@ function Block:place(x, y, w, h)
     -- Enclosing cell of the block
     self._cell = { x = x, y = y, w = w, h = h }
 
-    local s = self:size()
-
     if self.offset then
         x = x + self.offset.x
         y = y + self.offset.y
@@ -651,9 +649,10 @@ function Block:place(x, y, w, h)
     w = w - 2 * self.pad
     h = h - 2 * self.pad
 
-    if w < s.x or h < s.y then
-        print("Warning: the size of the element exceeds its cell bounds")
-    end
+    local s = self:size()
+--     if w < s.x or h < s.y then
+--         print("Warning: the size of the element exceeds its cell bounds")
+--     end
 
     self:doPlace(x, y, w, h)
 
@@ -997,17 +996,26 @@ end
 --
 -- -- Clear the queue
 -- utils.clearArray(queue)
--- -- Don't do the following to clear the queue
+-- -- or
+-- UI:clearQ()
+-- -- DON'T do the following to clear the queue
 -- -- queue = {} -- this will break the reference
 --
 -- @see Block:emit
 -- @see Utils.clearArray
+-- @see Block:clearQ
 function Block:registerQ (queue)
     self.queue = queue
 
     for child in self:traverse() do
         child.queue = queue
     end
+end
+
+--- Clears the block's queue.
+-- @see Block:registerQ
+function Block:clearQ ()
+    utils.clearArray(self.queue)
 end
 
 --- Focuses this block and every its parent upwards the tree.
@@ -1121,33 +1129,7 @@ end
 -- @param w width of the window
 -- @param h height of the window
 function Block:doPlace(x, y, w, h)
-    local s = self:size()
-
-    -- Initial position at the center of the enclosing cell
-    self.x = utils.round(x + (w - s.x) / 2)
-    self.y = utils.round(y + (h - s.y) / 2)
-
-    local move = {
-        ['left']   = function()
-            self.x = x
-        end,
-
-        ['right']  = function()
-            self.x = x + (w - s.x)
-        end,
-
-        ['bottom'] = function()
-            self.y = y + (h - s.y)
-        end,
-
-        ['top']    = function()
-            self.y = y
-        end
-    }
-
-    for direction in self.align:gsub('%s+', ''):gmatch('([^+]+)') do
-        if move[direction] then move[direction]() end
-    end
+    utils.placeAt(self, x, y, w, h)
 end
 
 function Block:mouseFSM ()
