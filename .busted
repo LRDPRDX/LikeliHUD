@@ -1,0 +1,7 @@
+return {
+    default = {
+        verbose = true,
+        lua     = '/usr/bin/luajit',
+    }
+}
+
