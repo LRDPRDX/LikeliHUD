@@ -23,7 +23,7 @@ local fill = ui.Layout {
             },
 
             ui.Label {
-                text = 'one',
+                text = 'two',
             },
 
             ui.Label {
