@@ -33,9 +33,9 @@ local Label = Block:subclass('Label')
 -- * `color` : a color like in [love2d](https://www.love2d.org/wiki/love.graphics.setColor)
 -- (the table variant). The color of the text.
 -- * `elide` : a boolean meaning whether the text is cut when the label doesn't fit its enclosing
--- cell. `false` by default. _NOTE_: it only takes effect (for now at least) _on placement_: i.e.
--- when its `Block:place` is called. If you change `text` afterwards the new text will be put as
--- is, without elision. Useful for static `Label`s.
+-- cell. `false` by default. _NOTE_: if you want to change `text` dinamically don't just assign
+-- `text` to a new value: it won't elide. Instead use the `Label:setText` member-function.
+--
 --        ■────────────╮
 --        │ A veeeery long label  -- elide = false
 --        ╰────────────╯
@@ -43,35 +43,47 @@ local Label = Block:subclass('Label')
 --        ■────────────╮
 --        │ A veeeer...│          -- elide = true
 --        ╰────────────╯
+-- See `elide.lua` for the example.
 function Label:new()
-    self.text    = self.text    or ''
-    self.maxText = self.maxText or self.text
-    self.elide   = self.elide   or false
+    self.text         = self.text    or ''
+    self._totalText   = self.text
+    self.maxText      = self.maxText or self.text
+    self.elide        = self.elide   or false
 
-    if #self.maxText < #self.text then
+    if #self.maxText < #self.text then -- TODO: use width instead of length
         self.maxText = self.text
     end
 end
 
 function Label:doSize()
-    local font = love.graphics.getFont()
     return {
-        x = font:getWidth(self.maxText),
-        y = font:getHeight(),
+        x = self.font:getWidth(self.maxText),
+        y = self.font:getHeight(),
     }
+end
+
+--- Changes the label's text.
+-- _NOTE_: it doesn't just assign a new value to the `text` property. It re-places the block
+-- in its enclosing cell also. This function is supposed to be used together with the `elide`
+-- property. So use only if `elide` is `true` and you want to modify the label's text while still
+-- be elided. If it's not the case just change `text`: `self.text = 'new_text_here'`.
+--
+-- See `elide.lua` for the example.
+-- @param text a string. New label's text.
+function Label:setText(text)
+    self._totalText = text
+
+    local c = self:cell()
+    self:place(c.x, c.y, c.w, c.h)
 end
 
 function Label:doPlace (x, y, w, h)
     local s = self:size()
 
-    local font = love.graphics.getFont()
-    if self.elide and (font:getWidth(self.text)) > w then
-        local ellipsis = '...'
-        self.text = utils.textAtWidth(self.text,
-                                      math.max(w - font:getWidth(ellipsis), 0),
-                                      font) .. ellipsis
+    if self.elide then
+        self.text = utils.elide(self._totalText, w, self.font)
     end
-    s.x = font:getWidth(self.text)
+    s.x = self.font:getWidth(self.text)
 
     utils.placeAt(self, x, y, w, h, s)
 end

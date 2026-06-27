@@ -109,14 +109,34 @@ function utils.textAtWidth (text, width, font)
     return textAtWidth (text, 1, text:len(), width, font)
 end
 
+local ellipsis = '...'
+--- Elides the text and appends an ellipsis at the end if elided.
+-- @param text a string. The original text to elide.
+-- @param width a non-negative number. The width to fit the text.
+-- @param font a font. The target font.
+-- @see utils.textAtWidth
+-- @usage
+-- local t = 'Something went wrong' -- suppose this text is 10 units wide in out font
+-- t = utils.elide(t, 4, font)
+-- print(t) --> Somet...
+function utils.elide (text, width, font)
+    -- TODO: include kerning
+    if font:getWidth(text) > width then
+        return utils.textAtWidth(text,
+                                 math.max(width - font:getWidth(ellipsis), 0),
+                                 font) .. ellipsis
+    end
+    return text
+end
+
 --- Places the block in a given enclosing cell with some default algorithm.
 -- It is unlikely you need this function ever -- it is used internally, but
 -- exposed for the sake of reusability.
--- @param block
--- @param x x coordinate of the enclosing cell
--- @param y y coordinate of the enclosing cell
--- @param w width of the enclosing cell
--- @param h height of the enclosing cell
+-- @param block a block. The block to place.
+-- @param x x coordinate of the enclosing cell.
+-- @param y y coordinate of the enclosing cell.
+-- @param w width of the enclosing cell.
+-- @param h height of the enclosing cell.
 -- @param s size of the block which must be used during placement. If `nil` then
 -- `Block:size` is used.
 --

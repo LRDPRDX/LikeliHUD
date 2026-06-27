@@ -25,12 +25,13 @@ local insideUI     = require('examples.inside')
 local elideUI      = require('examples.elide')
 local HUD          = nil
 
-local queue = {}
+local queue = {} -- the queue here is shared between the examples
 
 local function updateHUD(newHUD)
     local w, h = love.window.getMode()
     if HUD then
-        HUD:registerQ()
+        HUD:clearQ()
+        HUD:registerQ() -- unregister the queue
     end
     HUD = newHUD
     HUD:place(screen.margin, screen.margin, w - 2 * screen.margin, h - 2 * screen.margin)
@@ -38,7 +39,8 @@ local function updateHUD(newHUD)
 end
 
 local oeSound = love.audio.newSource( 'sounds/oe.mp3', 'stream' )
-local n = 1
+local n = 1 -- for `examples/events.lua`
+local p = 0 -- for `examples/elide.lua`
 
 
 local keys = {
@@ -49,16 +51,21 @@ local keys = {
                 HUD:push { id = 'number.changed', number = n }
             end,
 
-            ['1'] = function() updateHUD(layoutUI) end,
-            ['2'] = function() updateHUD(simpleUI) end,
-            ['3'] = function() updateHUD(oeUI) end,
+            ['p'] = function()
+                p = p + 1
+                HUD:push { id = 'elide.label.change', text = string.rep('A', p) }
+            end,
+
+            ['1'] = function() updateHUD(layoutUI)  end,
+            ['2'] = function() updateHUD(simpleUI)  end,
+            ['3'] = function() updateHUD(oeUI)      end,
             ['4'] = function() updateHUD(squaresUI) end,
-            ['5'] = function() updateHUD(fillUI) end,
+            ['5'] = function() updateHUD(fillUI)    end,
             ['6'] = function() updateHUD(buttonsUI) end,
-            ['7'] = function() updateHUD(eventsUI) end,
-            ['8'] = function() updateHUD(focusUI) end,
-            ['9'] = function() updateHUD(insideUI) end,
-            ['0'] = function() updateHUD(elideUI) end,
+            ['7'] = function() updateHUD(eventsUI)  end,
+            ['8'] = function() updateHUD(focusUI)   end,
+            ['9'] = function() updateHUD(insideUI)  end,
+            ['0'] = function() updateHUD(elideUI)   end,
 
             ['q'] = function() love.event.quit() end,
         },
@@ -68,7 +75,7 @@ local keys = {
                 oeSound:stop()
             end
             oeSound:play()
-            HUD:push({ id = 'button.pressed' })
+            HUD:push { id = 'button.pressed' }
         end,
 
         ['escape'] = function () HUD:unsetFocus() end,
@@ -92,7 +99,7 @@ local keys = {
         end,
     },
     released = {
-        ['space'] = function() HUD:push({ id = 'button.released' }) end,
+        ['space'] = function() HUD:push { id = 'button.released' } end,
     }
 }
 

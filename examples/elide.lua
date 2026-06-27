@@ -5,11 +5,13 @@ local ElideLabel = function (t)
         text   = t.text,
         elide  = true,
         border = true,
+
+        on = t.on,
     }
 end
 
 local elide = ui.Layout {
-    rows    = 2,
+    rows    = 3,
     columns = 1,
 
     ui.Label {
@@ -56,6 +58,25 @@ local elide = ui.Layout {
         ElideLabel {
             text = 'and that meant comfort.',
         },
+    },
+
+    ui.Layout {
+        rows    = 1,
+        columns = 2,
+        fill    = { x = true, y = false },
+
+        ui.Label {
+            text = 'Press \'p\' to change the label on the right: ',
+        },
+
+        ElideLabel {
+            text   = 'Hello',
+            on = {
+                ['elide.label.change'] = function (self, event)
+                    self:setText(event.text)
+                end
+            }
+        }
     }
 }
 
