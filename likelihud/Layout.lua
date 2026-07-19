@@ -382,7 +382,7 @@ end
 -- @see Block:mouseRemove
 function Layout:mouseRemove ()
     for _, child in ipairs(self) do
-        child:removeMouse()
+        child:mouseRemove()
     end
 end
 
