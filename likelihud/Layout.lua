@@ -377,4 +377,13 @@ function Layout:doMousereleased (x, y, button, istouch, presses)
     end
 end
 
+--- Mouse remove (unhover).
+-- Propagates this event to all of its direct children.
+-- @see Block:mouseRemove
+function Layout:mouseRemove ()
+    for _, child in ipairs(self) do
+        child:removeMouse()
+    end
+end
+
 return Layout

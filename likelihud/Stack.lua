@@ -105,4 +105,13 @@ function Stack:doMousereleased (x, y, button, istouch, presses)
     top:mousereleased(x, y, button, istouch, presses)
 end
 
+function Stack:mouseRemove()
+    if #self == 0 then
+        return
+    end
+
+    local top = self[#self]
+    top:mouseRemove()
+end
+
 return Stack

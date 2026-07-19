@@ -783,6 +783,23 @@ function Block:mousereleased(x, y, button, istouch, presses)
     self:doMousereleased(x, y, button, istouch, presses)
 end
 
+--- Removes the mouse from the block.
+-- _NOTE_: it doesn't "physically" remove the cursor from the element, it just sends a signal
+-- to its mouse FSM, so the FSM "thinks" the cursor is not there anymore.
+-- This function is useful when you have a button which opens another window/dialog without
+-- closing the original one. Then
+-- any mouse events are probably consumed by the newly opened window/dialog. After that
+-- you close the dialog, but the button you clicked initially still looks hovered because you
+-- left it in that state before opening dialog.
+function Block:mouseRemove()
+    if not self.mouse then
+        return
+    end
+
+    local fsm = self:mouseFSM()
+    fsm:process('outside')
+end
+
 --- Events.
 -- Communication with the external world is defined through the use of `Event`'s.
 -- Events can go in two directions: from the external world to a block, and vice versa.
