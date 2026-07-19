@@ -3,6 +3,17 @@
 [![Docs](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml/badge.svg)](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml)
 [![pages-build-deployment](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment)
 
+- [Disclaimer](#disclaimer)
+- [Give it a taste](#give-it-a-taste)
+- [Feature list](#feature-list)
+- [Dependencies](#dependencies)
+- [Install](#installation)
+- [Examples](#examples)
+  - [Demo](#demo)
+  - [Signals](#signals)
+- [Documentation](#documentation)
+- [Acknowledgements](#acknowledgements-and-similar-projects)
+
 ## Disclaimer
 
 _This is not intended to be a universal GUI library - the direction under
@@ -98,7 +109,7 @@ This is the simplest game ever written with LÖVE2D (code [here](/examples/o.lua
 
 ![signals example](/gifs/o.gif)
 
-### Documentation
+## Documentation
 
 Documentation is available [here](https://lrdprdx.github.io/LikeliHUD/).
 
