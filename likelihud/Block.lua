@@ -176,6 +176,52 @@
 -- you usually call it
 -- once (per frame) for the root element.
 --
+-- **Inline components**
+--
+-- Sometimes it is needed to use the same settings (set of properties) for a block several times.
+-- And you don't want to create your own class (block) for it. Even sometimes it is not possible
+-- (due to the `subclass`'s library design, f.e.). In this case you can easily "define" new
+-- components in the following way:
+--
+--    local li = require('likelihud')
+--
+--    local MyButton = function (t)
+--      return li.ImageButton {
+--        path = t.path,
+--
+--        quad = {
+--          layout = {
+--            rows    = 3,
+--            columns = 1,
+--          }
+--        }
+--
+--        inside = {
+--          text = t.text
+--        }
+--      }
+--    end
+--
+--    local UI = li.Layout {
+--      rows = 3,
+--      columns = 1,
+--
+--      MyButton {
+--        path = '/path/to/image0.png',
+--        text = 'foo',
+--      },
+--
+--      MyButton {
+--        path = '/path/to/image1.png',
+--        text = 'bar',
+--      },
+--
+--      MyButton {
+--        path = '/path/to/image2.png',
+--        text = 'baz',
+--      },
+--    }
+--
 -- See below for details.
 -- @classmod Block
 
