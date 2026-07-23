@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>likeliHUD</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>likeliHUD</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/buttons.lua.html">buttons.lua</a></li>
+  <li><strong>elide.lua</strong></li>
+  <li><a href="../examples/events.lua.html">events.lua</a></li>
+  <li><a href="../examples/fill.lua.html">fill.lua</a></li>
+  <li><a href="../examples/focus.lua.html">focus.lua</a></li>
+  <li><a href="../examples/inside.lua.html">inside.lua</a></li>
+  <li><a href="../examples/layout.lua.html">layout.lua</a></li>
+  <li><a href="../examples/o.lua.html">o.lua</a></li>
+  <li><a href="../examples/simple.lua.html">simple.lua</a></li>
+  <li><a href="../examples/squares.lua.html">squares.lua</a></li>
+  <li><a href="../examples/start.lua.html">start.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Utils.html">Utils</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Block.html">Block</a></li>
+  <li><a href="../classes/Layout.html">Layout</a></li>
+  <li><a href="../classes/Rectangle.html">Rectangle</a></li>
+  <li><a href="../classes/Image.html">Image</a></li>
+  <li><a href="../classes/Stack.html">Stack</a></li>
+  <li><a href="../classes/Label.html">Label</a></li>
+  <li><a href="../classes/ImageButton.html">ImageButton</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/README.md.html">README</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>elide.lua</h2>
+<pre>
+<span class="keyword">local</span> ui = <span class="global">require</span>(<span class="string">'likelihud'</span>)
+
+<span class="keyword">local</span> ElideLabel = <span class="keyword">function</span> (t)
+    <span class="keyword">return</span> ui.<span class="function-name">Label</span> {
+        text   = t.text,
+        elide  = <span class="keyword">true</span>,
+        border = <span class="keyword">true</span>,
+
+        on = t.on,
+    }
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> elide = ui.<span class="function-name">Layout</span> {
+    rows    = <span class="number">3</span>,
+    columns = <span class="number">1</span>,
+
+    ui.<span class="function-name">Label</span> {
+        text = <span class="string">'Resize the window to see how elided labels work'</span>,
+        fill = { x = <span class="keyword">true</span>, y = <span class="keyword">false</span> },
+    },
+
+    ui.<span class="function-name">Layout</span> {
+        rows    = <span class="number">3</span>,
+        columns = <span class="number">3</span>,
+
+        <span class="function-name">ElideLabel</span> {
+            text  = <span class="string">'In a hole in the ground'</span>,
+        },
+
+        <span class="function-name">ElideLabel</span> {
+            text = <span class="string">'there lived a hobbit.'</span>,
+        },
+
+        <span class="function-name">ElideLabel</span> {
+            text = <span class="string">'Not a nasty, dirty, wet hole,'</span>,
+        },
+
+        <span class="function-name">ElideLabel</span> {
+            text = <span class="string">'filled with the end of worms'</span>,
+        },
+
+        <span class="function-name">ElideLabel</span> {
+            text = <span class="string">'and an oozy smell, nor yet a dry,'</span>,
+        },
+
+        <span class="function-name">ElideLabel</span> {
+            text = <span class="string">'bare, sandy hole'</span>,
+        },
+
+        <span class="function-name">ElideLabel</span> {
+            text = <span class="string">'with nothing to sit down on or eat:'</span>,
+        },
+
+        <span class="function-name">ElideLabel</span> {
+            text = <span class="string">'это была хоббичья нора'</span>,
+        },
+
+        <span class="function-name">ElideLabel</span> {
+            text = <span class="string">'and that meant comfort.'</span>,
+        },
+    },
+
+    ui.<span class="function-name">Layout</span> {
+        rows    = <span class="number">1</span>,
+        columns = <span class="number">2</span>,
+        fill    = { x = <span class="keyword">true</span>, y = <span class="keyword">false</span> },
+
+        ui.<span class="function-name">Label</span> {
+            text = <span class="string">'Press \'p\' to change the label on the right: '</span>,
+        },
+
+        <span class="function-name">ElideLabel</span> {
+            text   = <span class="string">'Hello'</span>,
+            on = {
+                [<span class="string">'elide.label.change'</span>] = <span class="keyword">function</span> (self, event)
+                    self:<span class="function-name">setText</span>(event.text)
+                <span class="keyword">end</span>
+            }
+        }
+    }
+}
+
+<span class="keyword">return</span> elide</pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2026-07-23 17:16:44 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
