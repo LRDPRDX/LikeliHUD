@@ -1,4 +1,4 @@
-local font = love.graphics.newFont('fonts/moder-dos-437.ttf', 20)
+local font = love.graphics.newFont('fonts/opirus-opik/OpirusOpikRegular-RgDv.ttf', 45)
 love.graphics.setFont(font)
 
 local screen = {
