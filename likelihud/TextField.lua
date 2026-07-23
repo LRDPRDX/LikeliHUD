@@ -1,7 +1,10 @@
+local utf8 = require('lua-utf8')
+
 --- Used to enter text.
 -- @classmod TextField
 local UI = (...):gsub('TextField$', '')
 local Block = require(UI .. 'Block')
+local utils = require(UI .. 'utils')
 
 --- Represents a text field.
 -- @type TextField
@@ -11,8 +14,8 @@ local function update (self)
     local cursor = self.cursor
     local text   = self.text
 
-    cursor.position = math.min(math.max(cursor.position, 0), text:len())
-    cursor.x = self.font:getWidth(text:sub(1, cursor.position))
+    cursor.position = math.min(math.max(cursor.position, 0), utf8.len(text))
+    cursor.x = self.font:getWidth(utils.usub(text, 1, cursor.position))
 
     if cursor.x + self.shift >= self.width then
         self.shift = self.width - cursor.x
@@ -22,12 +25,15 @@ local function update (self)
 end
 
 local function textinput (self, t)
-    if self.text:len() >= self.maxLength then
+    if utf8.len(self.text) >= self.maxLength then
         return
     end
 
     local cursor = self.cursor
-    self.text = self.text:sub(1, cursor.position) .. t .. self.text:sub(cursor.position + 1)
+    self.text = utils.usub(self.text, 1, cursor.position) ..
+                t ..
+                utils.usub(self.text, cursor.position + 1)
+
     cursor.position = cursor.position + 1
 end
 
@@ -39,7 +45,8 @@ local function backspace (self)
     end
 
     cursor.position = cursor.position - 1
-    self.text = self.text:sub(1, cursor.position) .. self.text:sub(cursor.position + 2)
+    self.text = utils.usub(self.text, 1, cursor.position) ..
+                utils.usub(self.text, cursor.position + 2)
 end
 
 local function left (self)
@@ -94,7 +101,7 @@ end
 -- -- without filter above both text fields will be receiving text
 function TextField:new ()
     self.maxLength  = self.maxLength or 100
-    self.text       = self.text and self.text:sub(1, self.maxLength) or ''
+    self.text       = self.text and utils.usub(self.text, 1, self.maxLength) or ''
     self.margin     = self.margin or 10
     self.width      = self.width or 100
 
