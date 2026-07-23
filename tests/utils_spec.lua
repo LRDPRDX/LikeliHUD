@@ -1,4 +1,3 @@
-print(package.path)
 local li = require('likelihud')
 
 describe('utils', function()
@@ -105,6 +104,97 @@ describe('utils', function()
                 assert.is.equal(utils.textAtWidth('abcdefg', 6, f), 'abcdefg')
             end)
         end)
-    end)
+    end) -- textAtWidth
+
+    describe('usub', function()
+        local compare = function (text, from, to)
+            return utils.usub(text, from, to) == text:sub(from, to)
+        end
+
+        it('text = \'\'', function()
+            local text = ''
+
+            assert.is_true(compare(text, 0))
+            assert.is_true(compare(text, 1))
+            assert.is_true(compare(text, 2))
+            assert.is_true(compare(text, -1))
+            assert.is_true(compare(text, -2))
+
+            assert.is_true(compare(text, 0, 1))
+            assert.is_true(compare(text, 1, 2))
+            assert.is_true(compare(text, 2, 3))
+            assert.is_true(compare(text, -1, -2))
+            assert.is_true(compare(text, -2, -1))
+        end)
+
+        it('text = abcdef', function()
+            local text = 'abcdef'
+
+            assert.is_true(compare(text, 0))
+            assert.is_true(compare(text, 1))
+            assert.is_true(compare(text, 2))
+            assert.is_true(compare(text, 3))
+            assert.is_true(compare(text, 4))
+            assert.is_true(compare(text, 5))
+            assert.is_true(compare(text, 6))
+            assert.is_true(compare(text, 7))
+            assert.is_true(compare(text, 8))
+            assert.is_true(compare(text, -1))
+            assert.is_true(compare(text, -2))
+            assert.is_true(compare(text, -3))
+            assert.is_true(compare(text, -4))
+            assert.is_true(compare(text, -5))
+            assert.is_true(compare(text, -6))
+            assert.is_true(compare(text, -7))
+            assert.is_true(compare(text, -8))
+
+            assert.is_true(compare(text, 0, 1))
+            assert.is_true(compare(text, 1, 2))
+            assert.is_true(compare(text, 2, 3))
+            assert.is_true(compare(text, 1, 3))
+            assert.is_true(compare(text, 1, 5))
+            assert.is_true(compare(text, 1, 7))
+            assert.is_true(compare(text, -3, -1))
+            assert.is_true(compare(text, -4, -2))
+            assert.is_true(compare(text, -3, -7))
+        end)
+
+        it('text = привет', function()
+            local text = 'привет'
+
+            assert.is.equal(utils.usub(text, 1, 1), 'п')
+            assert.is.equal(utils.usub(text, 1, 2), 'пр')
+            assert.is.equal(utils.usub(text, 1, 3), 'при')
+            assert.is.equal(utils.usub(text, 1, 4), 'прив')
+            assert.is.equal(utils.usub(text, 1, 5), 'приве')
+            assert.is.equal(utils.usub(text, 1, 6), 'привет')
+            assert.is.equal(utils.usub(text, 1, 7), 'привет')
+
+            assert.is.equal(utils.usub(text, 0, 1), 'п')
+            assert.is.equal(utils.usub(text, 0, 2), 'пр')
+            assert.is.equal(utils.usub(text, 0, 3), 'при')
+            assert.is.equal(utils.usub(text, 0, 4), 'прив')
+            assert.is.equal(utils.usub(text, 0, 5), 'приве')
+            assert.is.equal(utils.usub(text, 0, 6), 'привет')
+            assert.is.equal(utils.usub(text, 0, 7), 'привет')
+
+            assert.is.equal(utils.usub(text, -1), 'т')
+            assert.is.equal(utils.usub(text, -2), 'ет')
+            assert.is.equal(utils.usub(text, -3), 'вет')
+            assert.is.equal(utils.usub(text, -4), 'ивет')
+            assert.is.equal(utils.usub(text, -5), 'ривет')
+            assert.is.equal(utils.usub(text, -6), 'привет')
+            assert.is.equal(utils.usub(text, -7), 'привет')
+
+            assert.is.equal(utils.usub(text, 1, 2), 'пр')
+            assert.is.equal(utils.usub(text, 3, 4), 'ив')
+            assert.is.equal(utils.usub(text, 5, 6), 'ет')
+
+            assert.is.equal(utils.usub(text, 3, 7), 'ивет')
+            assert.is.equal(utils.usub(text, 2, 4), 'рив')
+
+            assert.is.equal(utils.usub(text, 6, 3), '')
+        end)
+    end) -- usub
 end)
 
