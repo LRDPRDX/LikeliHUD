@@ -1,5 +1,5 @@
 local package_name      = 'likelihud'
-local package_version   = '1.81'
+local package_version   = '1.82'
 local rockspec_revision = '1'
 
 rockspec_format = '3.0'
@@ -31,6 +31,7 @@ description = {
 dependencies = {
    'lua      >= 5.1',
    'subclass >= 1.0',
+   'utf8     >= 1.3',
 }
 
 build = {

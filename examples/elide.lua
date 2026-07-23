@@ -52,7 +52,7 @@ local elide = ui.Layout {
         },
 
         ElideLabel {
-            text = 'it was a hobbit-hole',
+            text = 'это была хоббичья нора',
         },
 
         ElideLabel {

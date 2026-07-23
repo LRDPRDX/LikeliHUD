@@ -1,3 +1,6 @@
+-- local utf8 = require('utf8')
+local utf8 = require('lua-utf8')
+
 --- Different utility functions 
 --
 -- @module Utils
@@ -51,7 +54,7 @@ local function textAtWidth (text, l, r, width, font)
     -- c) text:sub(1, l) <= width
     -- d) r <= text:len()
     -- e) width >= 0
-    local prefix = text:sub(1, r)
+    local prefix = utils.usub(text, 1, r)
 
     -- At each call of this function text:sub(1, r) is at least
     -- as wide as width (see (2) below). So if it is less or equal it
@@ -69,12 +72,12 @@ local function textAtWidth (text, l, r, width, font)
     -- so the only option is `r == l + 1` which in turn means l is the
     -- maximum possible number of chars we can fit.
     if diff == 0 then
-        return text:sub(1, l)
+        return utils.usub(text, 1, l)
     end
 
     -- otherwise diff is at least 1.
     local midPoint        = l + diff
-    local widthAtMidPoint = font:getWidth(text:sub(1, midPoint))
+    local widthAtMidPoint = font:getWidth(utils.usub(text, 1, midPoint))
 
     if widthAtMidPoint >= width then -- (2)
         r = midPoint
@@ -83,6 +86,32 @@ local function textAtWidth (text, l, r, width, font)
     end
 
     return textAtWidth(text, l, r, width, font)
+end
+
+-- function utils.usub (text, from, to)
+--     local len = utf8.len(text)
+-- 
+--     if len == 0 then
+--         return text
+--     end
+-- 
+--     if (from >= len) then
+--         from = len
+--     end
+--     from = utf8.offset(text, from) -- if from == 0, then it returns the first byte
+-- 
+--     if (not to) or (to == -1) or
+--        (to >= len) or (to <= -len) then
+--         return text:sub(from)
+--     end
+-- 
+--     to = utf8.offset(text, to + 1) - 1
+-- 
+--     return text:sub(from, to)
+-- end
+
+function utils.usub (text, from, to)
+    return utf8.sub(text, from, to)
 end
 
 --- Returns the maximum substring (prefix) of a string which width
@@ -101,12 +130,12 @@ function utils.textAtWidth (text, width, font)
     assert(width >= 0, 'width must be non-negative')
 
     if (width == 0) or
-       (text:len() == 0) or
-       (font:getWidth(text:sub(1, 1)) > width) then
+       (utf8.len(text) == 0) or
+       (font:getWidth(utils.usub(text ,1, 1)) > width) then
         return ''
     end
 
-    return textAtWidth (text, 1, text:len(), width, font)
+    return textAtWidth (text, 1, utf8.len(text), width, font)
 end
 
 local ellipsis = '...'
