@@ -19,6 +19,8 @@ local function MyButton (t)
                 self:emit { id = 'last.clicked', data = t.text }
             end,
 
+            tooltip = t.tooltip,
+
             inside = {
                 ui.Label {
                     text = t.text
@@ -37,19 +39,31 @@ local buttons = ui.Layout {
         rows    = 4,
         columns = 1,
         fill    = { x = true, y = false },
-        spacing = 1,
+        spacing = 5,
 
 
         MyButton {
-            text = 'Start'
+            text = 'Start',
+
+            tooltip = {
+                text = 'Start the game',
+            }
         },
 
         MyButton {
-            text = 'Settings'
+            text = 'Settings',
+
+            tooltip = {
+                text = 'Open settings',
+            }
         },
 
         MyButton {
-            text = 'Quit'
+            text = 'Quit',
+
+            tooltip = {
+                text = 'Quit the game',
+            }
         },
 
         ui.Layout {

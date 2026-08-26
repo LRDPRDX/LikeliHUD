@@ -24,16 +24,44 @@ local ImageButton = Image:subclass('ImageButton')
 --                     |--------|---------|---------|---------|
 --        quad.current | 1      | 2       | 3       | 2       |
 --
+-- * `onPress` : a function. Called whenever the button is pressed. The button object itself
+-- is passed to that function on call.
 --
 -- * `onClick` : a function. Called whenever the button is clicked. The button object itself
+-- is passed to that function on call.
+--
+-- * `onEnter` : a function. Called whenever the cursor is enters the button. The button object itself
+-- is passed to that function on call.
+--
+-- * `onExit` : a function. Called whenever the cursor is exits the button. The button object itself
 -- is passed to that function on call.
 --
 -- * `mouse` : ⚠️ Don't override this property. If you want a button with
 -- a custom mouse
 -- better to create it from scratch as a user-defined block.
 --
+-- * `tooltip` : A table. A tooltip object. It works in the following way:
+--    * on the button's creation it adds the `block` field to the tooltip object
+--      (so `tooltip.block` refers to the button itself)
+--    * every time the cursor enters the button two things happen:
+--        * the tooltips `status` field is set to `true` and
+--        * the following event is emitted: `{ id = 'likelihud.tooltip', tooltip = tooltip }`
+--
+--    * every time the cursor leaves the button
+--        * the tooltips `status` field is set to `false` and
+--        * the following event is emitted: `{ id = 'likelihud.tooltip', tooltip = tooltip }`
+--
+--    so it emits the signal with the tooltip object itself as the data. Then you can catch those
+--    signals and draw the tooltip. _NOTE_ : you might have thought why not drawing tooltips
+--    automatically. The reason is that drawing is sequential: the button is drawn once per frame,
+--    this means that if we had drawn the button's tooltip after the button itself everything which
+--    is drawn _after_ the button would have drawn _over_ the tooltip. In other words, this library
+--    doesn't support delayed drawing out of the box.
+--
 -- _NOTE_ : this is not a text button - use the `inside` (see `Block:new`)
 -- property to place a `Label` inside a button.
+--
+-- See the `buttons.lua` file for an example.
 --
 -- @usage
 --
@@ -45,6 +73,10 @@ local ImageButton = Image:subclass('ImageButton')
 --             rows    = 3,
 --             columns = 1,
 --         },
+--     },
+--
+--     tooltip = {
+--       text = 'This is a tooltip'
 --     },
 --
 --     -- Make the button display text
@@ -60,15 +92,48 @@ function ImageButton:new()
         :format(#self.quad.quads), 2)
     end
 
+    if self.tooltip then
+        self.tooltip.block = self
+    end
+
     self.mouse = {
-        onExit  = function (self) self.quad.current = 1 end,
-        onEnter = function (self) self.quad.current = 2 end,
-        onPress = function (self) self.quad.current = 3 end,
-        onClick = function (self)
-            if self.onClick then
-                self:onClick()
+        onExit  = function (this)
+            this.quad.current = 1
+
+            if self.tooltip then
+                self.tooltip.status = false
+                self:emit { id = 'likelihud.tooltip', tooltip = self.tooltip }
             end
-            self.quad.current = 2
+
+            if this.onExit then
+                this:onExit()
+            end
+        end,
+
+        onEnter = function (this)
+            this.quad.current = 2
+            if self.tooltip then
+                self.tooltip.status = true
+                self:emit { id = 'likelihud.tooltip', tooltip = self.tooltip }
+            end
+
+            if this.onEnter then
+                this:onEnter()
+            end
+        end,
+
+        onPress = function (this)
+            this.quad.current = 3
+            if this.onPress then
+                this:onPress()
+            end
+        end,
+
+        onClick = function (this)
+            this.quad.current = 2
+            if this.onClick then
+                this:onClick()
+            end
         end,
     }
 end

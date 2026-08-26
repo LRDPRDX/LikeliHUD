@@ -957,7 +957,10 @@ end
 -- you emit an event from one element, and then when you handle that event you push another
 -- event back to the block tree. See an example below.
 --
--- See also the `buttons.lua` for an example. (The queue is registered and processed in main.lua)
+-- ⚠️ There are events which are automatically sent by the library. Their `id`s have prefix
+-- `'likelihud.'`: for example, `ImageButton` sends the event with `id = 'likelihud.tooltip'`.
+--
+-- See also the `buttons.lua` for an example. (The queue is registered and processed in `main.lua`)
 --
 -- @section signals
 
@@ -1001,17 +1004,15 @@ function Block:push (event)
 end
 
 --- It says whether the event should propagate further down the tree or not.
--- And also can be used to modify the event: so the children blocks will get
--- a modified event.
 -- @param event Event to be passed. _NOTE_: DON'T modify this event
--- inside this function (if overriden). If you want to modify the event
--- create a new one inside this function and return it
--- (see the 2nd return value).
+-- inside this function (if overriden).
 -- @return A boolean.
 -- `true` means that `event` propagates down the tree (i.e. to the children).
 -- `false` means the event is filtered out and the propagation breaks.
 -- _NOTE_: you can either pass this function as a property in the constructor
--- or override the method. See `events.lua` for an example.
+-- or override the method. In case of overriding this function by creating the `filter` property
+-- the function must expect 2 parameters: `self` and `event`.
+-- See `events.lua` for an example.
 -- @see
 -- Block:push
 function Block:filter (event)

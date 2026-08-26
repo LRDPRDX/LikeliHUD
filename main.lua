@@ -42,6 +42,13 @@ local oeSound = love.audio.newSource( 'sounds/oe.mp3', 'stream' )
 local n = 1 -- for `examples/events.lua`
 local p = 0 -- for `examples/elide.lua`
 
+local tooltips = {}
+local function drawTooltip (t)
+    local x, y = t.block.x, t.block.y
+    local s = t.block:size()
+    love.graphics.print(t.text, x + s.x , y + s.y / 2, 0, 0.8, 0.8)
+end
+
 
 local keys = {
     pressed = {
@@ -110,6 +117,14 @@ end
 
 function love.update(_)
     for _, event in ipairs(queue) do
+        if event.id == 'likelihud.tooltip' then
+            if event.tooltip.status == false then
+                tooltips[event.tooltip] = nil
+            else
+                tooltips[event.tooltip] = true
+            end
+        end
+
         if event.id == 'last.clicked' then
             HUD:push { id = 'last.clicked', message = event.data }
         end
@@ -159,5 +174,10 @@ end
 
 function love.draw()
     HUD:draw()
+
+    for t, _ in pairs(tooltips) do
+        drawTooltip(t)
+    end
+
     statUI:draw()
 end

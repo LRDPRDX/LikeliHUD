@@ -1,7 +1,10 @@
+--- A text field.
+--
+-- Used to enter text.
+--
+-- @classmod TextField
 local utf8 = require('lua-utf8')
 
---- Used to enter text.
--- @classmod TextField
 local UI = (...):gsub('TextField$', '')
 local Block = require(UI .. 'Block')
 local utils = require(UI .. 'utils')
