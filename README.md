@@ -79,6 +79,7 @@ end
 ## Dependencies
 
  - [subclass](https://github.com/LRDPRDX/lua-class) (used internally)
+ - [lua-utf8](https://github.com/starwing/luautf8)
 
 ## Installation
 
