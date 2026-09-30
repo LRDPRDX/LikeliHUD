@@ -68,6 +68,10 @@ end
     - `Stack`
     - `Image`
     - `Label`
+    - Elements like `CheckBox`, `TextButton`, `Tooltip`, can be created on top
+of this library easily, so I don't think I will make them available
+out-of-the-box. However, elements like `Multiline TextField` or `ComboBox`
+most probably will be added later.
 - Communication with the external logic through the events
 - Declarative approach. Similar to QML.
 - Grid layout. Nested layouts are possible.
