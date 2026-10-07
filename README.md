@@ -3,6 +3,8 @@
 [![Docs](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml/badge.svg)](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/doc.yml)
 [![pages-build-deployment](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/LRDPRDX/LikeliHUD/actions/workflows/pages/pages-build-deployment)
 
+![q](images/q.png)
+
 - [Disclaimer](#disclaimer)
 - [Give it a taste](#give-it-a-taste)
 - [Feature list](#feature-list)
@@ -11,6 +13,7 @@
 - [Examples](#examples)
   - [Demo](#demo)
   - [Signals](#signals)
+- [Links](#links)
 - [Documentation](#documentation)
 - [Acknowledgements](#acknowledgements-and-similar-projects)
 
@@ -72,9 +75,11 @@ end
 of this library easily, so I don't think I will make them available
 out-of-the-box. However, elements like `Multiline TextField` or `ComboBox`
 most probably will be added later.
-- Communication with the external logic through the events
+- Communication with the outer world is achieved by means of events.
 - Declarative approach. Similar to QML.
 - Grid layout. Nested layouts are possible.
+- Auto resize. You can resize the window and everything is re-placed
+accordingly.
 - Auto alignment. Alignment hints : `center`, `top`, `bottom`, `left` or a
   combination.
 - Each element inside a layout can be set to fill `x` (width), `y` (height), both or
@@ -113,6 +118,12 @@ This is a demo (code [here](/main.lua)):
 This is the simplest game ever written with LÖVE2D (code [here](/examples/o.lua)):
 
 ![signals example](/gifs/o.gif)
+
+## Links
+
+- [Queuest](https://love2d.org/forums/viewtopic.php?t=96856)
+- [LÖVE2D topic](https://love2d.org/forums/viewtopic.php?t=96850)
+- [LÖVE2D wiki](https://love2d.org/wiki/likeliHUD)
 
 ## Documentation
 
